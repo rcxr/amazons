@@ -12,7 +12,5 @@ public:
 private:
   Engine();
 
-  static Move* getLegalMove(Board const* board, TurnManager const* turn);
-
   void report(TurnManager const* turn) const;
 };

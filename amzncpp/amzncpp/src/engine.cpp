@@ -17,10 +17,10 @@ void Engine::run() const {
       Log::info(board);
       Move* move = nullptr;
       if (turn->isTheirTurn(user)) {
-        move = getLegalMove(board, turn);
+        move = Input::getMove(board, turn);
       }
       else {
-        move = getLegalMove(board, turn);
+        move = Input::getMove(board, turn);
       }
       turn->nextTurn();
       delete move;
@@ -36,15 +36,6 @@ void Engine::run() const {
 
 Engine::Engine() {
   Log::info("Welcome to amzn.cpp! :)");
-}
-
-Move* Engine::getLegalMove(Board const* board, TurnManager const* turn) {
-  Move* move = Input::getMove(turn->getCurrent());
-  while (!board->isLegalMove(move)) {
-    Log::error("That is not a valid move");
-    move = Input::getMove(turn->getCurrent());
-  }
-  return move;
 }
 
 void Engine::report(TurnManager const* turn) const {

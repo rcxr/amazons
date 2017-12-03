@@ -3,6 +3,7 @@
 #include "input.h"
 #include "log.h"
 #include "config.h"
+#include "turn.h"
 
 Tile intToTile(int tile) {
   switch (tile) {
@@ -76,9 +77,18 @@ bool Input::getRetry() {
   }
 }
 
-Move* Input::getMove(Player const& player) {
+Move* getMove(Player const& player) {
   Log::info("Make a move for " + player.getLabel() + " (\"fromRow fromCol toRow toCol targetRow targetCol\")");
   int fromX, fromY, toX, toY, targetX, targetY;
   std::cin >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
   return new Move(player, fromX, fromY, toX, toY, targetX, targetY);
+}
+
+Move* Input::getMove(Board const* board, TurnManager const* turn) {
+  Move* move = getMove(turn->getCurrent());
+  while (!board->isLegalMove(move)) {
+    Log::error("That is not a valid move");
+    move = getMove(turn->getCurrent());
+  }
+  return move;
 }
