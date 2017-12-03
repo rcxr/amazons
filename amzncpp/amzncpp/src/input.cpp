@@ -22,16 +22,33 @@ Board* parseFile(std::string const& filename) {
     return nullptr;
   }
 
+  int width;
+  int height;
   int tile;
-  auto tiles = new Tile[BOARD_DEFAULT_WIDTH * BOARD_DEFAULT_HEIGHT];
-  for (auto i = 0; i < BOARD_DEFAULT_WIDTH * BOARD_DEFAULT_HEIGHT; ++i) {
+  stream >> tile;
+  if (tile < 1) {
+    stream >> width >> height;
+    // We consumed metadata, we need to consume first actual value
+    stream >> tile;
+  }
+  else {
+    // Value is an actual value, dimensions are as default
+    width = BOARD_DEFAULT_WIDTH;
+    height = BOARD_DEFAULT_HEIGHT;
+  }
+
+  // Creating dynamic array and setting first position that we already got
+  Tile* tiles = new Tile[width * height];
+  tiles[0] = intToTile(tile);
+
+  for (auto i = 1; i < width * height; ++i) {
     stream >> tile;
     tiles[i] = intToTile(tile);
   }
   stream.close();
 
   Log::info("Board successfully loaded from file");
-  return new Board(tiles, BOARD_DEFAULT_WIDTH, BOARD_DEFAULT_HEIGHT);
+  return new Board(tiles, width, height);
 }
 
 std::string getFile() {
