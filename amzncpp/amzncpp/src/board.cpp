@@ -2,7 +2,13 @@
 #include <unordered_map>
 #include <algorithm>
 
-Board::Board(Tile* tiles, int width, int height) : tiles(tiles), width(width), height(height), regions(processRegions(this, tiles)) {}
+Board::Board(Tile* tiles, int width, int height) :
+  tiles(tiles),
+  width(width),
+  height(height),
+  leftScope(processScope(this, PLAYER_TYPE_LEFT)),
+  rightScope(processScope(this, PLAYER_TYPE_RIGHT)),
+  regions(processRegions(this, tiles)) {}
 
 Board::~Board() {
   for (auto region : regions) {
@@ -30,14 +36,8 @@ Tile Board::get(int x, int y) const {
   return tiles[index(x, y)];
 }
 
-int Board::getScope(Player const* player) const {
-  auto scope = 0;
-  for (auto x = 0; x < width; ++x) {
-    for (auto y = 0; y < height; ++y) {
-      scope += getScope(player->getTile(), x, y);
-    }
-  }
-  return scope;
+int Board::getScope(Player const& player) const {
+  return player.isLeft() ? leftScope : rightScope;
 }
 
 std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
@@ -45,8 +45,8 @@ std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
   std::vector<Region*> regions;
   auto visited = new bool[board->getSize()];
   std::fill(visited, visited + board->getSize(), false);
-  for (auto x = 0; x < board->getWidth(); ++x) {
-    for (auto y = 0; y < board->getHeight(); ++y) {
+  for (auto x = 0; x < board->width; ++x) {
+    for (auto y = 0; y < board->height; ++y) {
       if (!visited[board->index(x, y)] && board->isPlayable(x, y)) {
         auto region = new Region(++id);
         spreadRegion(board, visited, region, x, y);
@@ -87,19 +87,29 @@ void Board::spreadRegion(Board const* board, bool* visited, Region* region, int 
   spreadRegion(board, visited, region, x, y + 1);
 }
 
-int Board::getScope(Tile tile, int x, int y) const {
-  if (tile != get(x, y)) {
+int Board::processScope(Board const* board, PlayerType playerType) {
+  auto scope = 0;
+  for (auto x = 0; x < board->width; ++x) {
+    for (auto y = 0; y < board->height; ++y) {
+      scope += getScope(board, Player::instance(playerType).getTile(), x, y);
+    }
+  }
+  return scope;
+}
+
+int Board::getScope(Board const* board, Tile tile, int x, int y) {
+  if (tile != board->get(x, y)) {
     return 0;
   }
   auto scope = 0;
-  for (auto i = 1; TILE_BLANK == get(x - i, y - i); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x - i, y + i); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x + i, y - i); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x + i, y + i); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x - i, y); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x + i, y); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x, y - i); ++i) { ++scope; }
-  for (auto i = 1; TILE_BLANK == get(x, y + i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x - i, y - i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x - i, y + i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x + i, y - i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x + i, y + i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x - i, y); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x + i, y); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x, y - i); ++i) { ++scope; }
+  for (auto i = 1; TILE_BLANK == board->get(x, y + i); ++i) { ++scope; }
   return scope;
 }
 

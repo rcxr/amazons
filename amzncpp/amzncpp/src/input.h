@@ -3,4 +3,5 @@
 
 namespace Input {
   Board* getBoard();
+  Player const& getPlayer();
 }

@@ -49,3 +49,17 @@ Board* Input::getBoard() {
   }
   return board;
 }
+
+Player const& Input::getPlayer() {
+  while (true) {
+    Log::info("Choose player (left or right)");
+    std::string player;
+    std::cin >> player;
+    if (0 == player.compare("left") || 0 == player.compare("l")) {
+      return Player::instanceLeft();
+    }
+    if (0 == player.compare("right") || 0 == player.compare("r")) {
+      return Player::instanceRight();
+    }
+  }
+}
