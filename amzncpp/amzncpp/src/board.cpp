@@ -40,14 +40,22 @@ Tile Board::get(std::pair<int, int> p) const {
   return get(p.first, p.second);
 }
 
+int Board::getLeftScope() const {
+  return getScope(Player::instanceLeft());
+}
+
+int Board::getRightScope() const {
+  return getScope(Player::instanceRight());
+}
+
 int Board::getScope(Player const& player) const {
   return player.isLeft() ? leftScope : rightScope;
 }
 
-bool Board::isLegalMove(Player const& player, Move* move) const {
-  return move->getFrom() != move->getTo()
+bool Board::isLegalMove(Move* move) const {
+  return move && move->getFrom() != move->getTo()
     && move->getTo() != move->getTarget()
-    && player.getTile() == get(move->getFrom())
+    && move->getPlayer().getTile() == get(move->getFrom())
     && isClear(move->getFromX(), move->getFromY(), move->getToX(), move->getToY(), move->getFromX(), move->getFromY())
     && isClear(move->getToX(), move->getToY(), move->getTargetX(), move->getTargetY(), move->getFromX(), move->getFromY());
 }

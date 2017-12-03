@@ -29,10 +29,8 @@ Board* parseFile(std::string const& filename) {
   }
   stream.close();
 
-  auto board = new Board(tiles, BOARD_DEFAULT_WIDTH, BOARD_DEFAULT_HEIGHT);
   Log::info("Board successfully loaded from file");
-  Log::info(board);
-  return board;
+  return new Board(tiles, BOARD_DEFAULT_WIDTH, BOARD_DEFAULT_HEIGHT);
 }
 
 std::string getFile() {
@@ -79,11 +77,7 @@ bool Input::getRetry() {
 }
 
 Move* Input::getMove(Player const& player) {
-  Log::info("Make a move for " + player.getLabel());
-  Log::info("You need to type six numbers");
-  Log::info("Two numbers for the row and column of the amazon you want to use");
-  Log::info("Two numbers for the row and column of the destination tile");
-  Log::info("Two numbers for the row and column of the tile the amazon will shoot");
+  Log::info("Make a move for " + player.getLabel() + " (\"fromRow fromCol toRow toCol targetRow targetCol\")");
   int fromX, fromY, toX, toY, targetX, targetY;
   std::cin >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
   return new Move(player, fromX, fromY, toX, toY, targetX, targetY);

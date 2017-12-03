@@ -13,16 +13,16 @@ void Engine::run() const {
 
     auto turn = new TurnManager(Player::instanceLeft());
     while (board->getScope(turn->getCurrent())) {
+      Log::clear();
+      Log::info(board);
       Move* move = nullptr;
       if (turn->isTheirTurn(user)) {
-        move = Input::getMove(turn->getCurrent());
-      } else {
-        move = Input::getMove(turn->getCurrent());
+        move = getLegalMove(board, turn);
       }
-      if (board->isLegalMove(turn->getCurrent(), move)) {
-        // Perform move
-        turn->nextTurn();
+      else {
+        move = getLegalMove(board, turn);
       }
+      turn->nextTurn();
       delete move;
     }
     report(turn);
@@ -36,6 +36,15 @@ void Engine::run() const {
 
 Engine::Engine() {
   Log::info("Welcome to amzn.cpp! :)");
+}
+
+Move* Engine::getLegalMove(Board const* board, TurnManager const* turn) {
+  Move* move = Input::getMove(turn->getCurrent());
+  while (!board->isLegalMove(move)) {
+    Log::error("That is not a valid move");
+    move = Input::getMove(turn->getCurrent());
+  }
+  return move;
 }
 
 void Engine::report(TurnManager const* turn) const {

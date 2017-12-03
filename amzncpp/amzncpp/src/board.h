@@ -15,8 +15,10 @@ public:
   Tile get(int x, int y) const;
   Tile get(std::pair<int, int> p) const;
 
+  int getLeftScope() const;
+  int getRightScope() const;
   int getScope(Player const& player) const;
-  bool isLegalMove(Player const& player, Move* move) const;
+  bool isLegalMove(Move* move) const;
 
 private:
   static std::vector<Region*> processRegions(Board const* board, Tile* tiles);
