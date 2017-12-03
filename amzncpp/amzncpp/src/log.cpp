@@ -48,8 +48,9 @@ void Log::info(std::string const& message) {
 void Log::info(Board const* board) {
   title("Stats");
   std::cout << "  Left scope = " << board->getLeftScope() << ",  Right scope = " << board->getRightScope() << std::endl;
+  info(board->getRegions());
   title("Board");
-  std::cout << "  Left        >   " << tileToFirstChar(TILE_LEFT, true) << tileToSecondChar(TILE_LEFT, true) << " ";
+  std::cout << "  Left        >   " << tileToFirstChar(TILE_LEFT, true) << tileToSecondChar(TILE_LEFT, true) << "  ";
   std::cout << "  Right       >   " << tileToFirstChar(TILE_RIGHT, true) << tileToSecondChar(TILE_RIGHT, true) << std::endl;
   std::cout << "                " << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true) << tileToFirstChar(TILE_BLANK, false) << tileToSecondChar(TILE_BLANK, false) << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true);
   std::cout << "                " << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << std::endl;
@@ -65,10 +66,17 @@ void Log::info(Board const* board) {
   }
 }
 
+void Log::info(std::vector<Region*> const& regions) {
+  title("Nonzero games (" + std::to_string(regions.size()) + ")");
+  for (auto region : regions) {
+    std::cout << region->toString() << std::endl;
+  }
+}
+
 void Log::info(std::string const& label, std::pair<Move*, Board*> move) {
   title(label);
   std::cout << "  Left scope = " << move.second->getLeftScope() << ",  Right scope = " << move.second->getRightScope() << std::endl;
-   std::cout << "  From = (" << move.first->getFromX() << ", " << move.first->getFromY() << "),";
+  std::cout << "  From = (" << move.first->getFromX() << ", " << move.first->getFromY() << "),";
   std::cout << "  To (" << move.first->getToX() << ", " << move.first->getToY() << "),";
   std::cout << "  Target (" << move.first->getTargetX() << ", " << move.first->getTargetY() << ")" << std::endl;
 }

@@ -9,6 +9,8 @@ public:
   explicit Board(Tile* tiles, int width, int height);
   ~Board();
 
+  std::vector<Region*> const& getRegions() const;
+
   int getWidth() const;
   int getHeight() const;
   int getSize() const;

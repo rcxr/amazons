@@ -17,6 +17,10 @@ Board::~Board() {
   delete[] tiles;
 }
 
+std::vector<Region*> const& Board::getRegions() const {
+  return regions;
+}
+
 int Board::getWidth() const {
   return width;
 }

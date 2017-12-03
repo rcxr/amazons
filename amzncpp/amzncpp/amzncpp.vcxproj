@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="src\board.cpp" />
     <ClCompile Include="src\calculator.cpp" />
+    <ClCompile Include="src\canonical.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\log.cpp" />
@@ -129,11 +130,15 @@
   <ItemGroup>
     <ClInclude Include="src\board.h" />
     <ClInclude Include="src\calculator.h" />
+    <ClInclude Include="src\canonical.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\engine.h" />
+    <ClInclude Include="src\guru.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\move.h" />
+    <ClInclude Include="src\number.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\region.h" />
     <ClInclude Include="src\tile.h" />
