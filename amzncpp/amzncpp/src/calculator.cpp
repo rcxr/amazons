@@ -30,6 +30,10 @@ Move* Calculator::calculateMove(Board const* board, Player const& player) const 
   return chosen;
 }
 
+Calculator::Calculator() {
+  Log::info("MinMax/MaxMin calculator up and running");
+}
+
 std::pair<Move*, Board*> Calculator::calculateMinMaxMove(std::vector<std::pair<Move*, Board*>> const& results, Player const& player) {
   auto best = UINT_MAX;
   auto max = INT_MIN;

@@ -10,12 +10,15 @@ enum CalculatorHeuristic {
 class Calculator {
 public:
   static Calculator& instance();
-  Calculator(Calculator const&) = delete;
-  void operator=(Calculator const&) = delete;
+
   Move* calculateMove(Board const* board, Player const& player) const;
 
+  Calculator(Calculator const&) = delete;
+  void operator=(Calculator const&) = delete;
 private:
-  Calculator() {}
+  Calculator();
+  ~Calculator() {}
+
   static std::pair<Move*, Board*> calculateMinMaxMove(std::vector<std::pair<Move*, Board*>> const& results, Player const& player);
   static std::pair<Move*, Board*> calculateMaxMinMove(std::vector<std::pair<Move*, Board*>> const& results, Player const& player);
 };

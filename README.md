@@ -58,4 +58,6 @@ And:
 0 0 0 2 0 0
 0 0 1 1 0 0
 Now that you know which canonical game this is, you can query for the best move to make using a pre-filled knowledge base (which I filled programmatically) :)
-Note about the 5x4 limitation. I can extend this coverage by using biginteger, right now I'm constrained to 20 base-3 digits, and I decided to use 4 and 5 as the dimensions. If the limitation changes, the knowledge base needs to be re-generated.
+Note about the 5x4 limitation. I can extend this coverage by using arbitrary length numbers, right now I'm constrained to 20 base-3 digits (3^20 < 2^32 < 3^21), and I decided to use 4 and 5 as the dimensions. The caveat is that if the limitation changes, the knowledge base needs to be re-generated.
+
+# TODO

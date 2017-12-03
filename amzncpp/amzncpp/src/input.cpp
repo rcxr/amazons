@@ -15,7 +15,7 @@ Tile intToTile(int tile) {
   }
 }
 
-Board* parseFile(std::string const& filename) {
+Board* parseBoardFile(std::string const& filename) {
   std::ifstream stream(filename);
   if (!stream.is_open()) {
     Log::error("File could not be opened");
@@ -28,7 +28,7 @@ Board* parseFile(std::string const& filename) {
   stream >> tile;
   if (tile < 1) {
     stream >> width >> height;
-    // We consumed metadata, we need to consume first actual value
+    // We consumed metadata, we need to consume first actual value to be consistent
     stream >> tile;
   }
   else {
@@ -61,7 +61,7 @@ std::string getFile() {
 Board* Input::getBoard() {
   Board* board = nullptr;
   while (!board) {
-    board = parseFile(getFile());
+    board = parseBoardFile(getFile());
   }
   return board;
 }
@@ -122,4 +122,31 @@ CalculatorHeuristic Input::getMinMax() {
       return CALCULATOR_HEURISTIC_MAXMIN;
     }
   }
+}
+
+std::unordered_map<unsigned, Canonical*> Input::getGuruDB(std::string const& filename) {
+  std::unordered_map<unsigned, Canonical*> db;
+  std::ifstream stream(filename);
+  if (!stream.is_open()) {
+    Log::error("Guru file could not be opened. Running without guru :(");
+    return db;
+  }
+  unsigned id, leftId, rightId, fromX, fromY, toX, toY, targetX, targetY;
+  while (stream >> id) {
+    stream >> leftId >> rightId;
+    Move* leftMove = nullptr;
+    if (CANONICAL_INVALID_ID != leftId) {
+      stream >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
+      leftMove = new Move(Player::instanceLeft(), fromX, fromY, toX, toY, targetX, targetY);
+    }
+    Move* rightMove = nullptr;
+    if (CANONICAL_INVALID_ID != rightId) {
+      stream >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
+      rightMove = new Move(Player::instanceRight(), fromX, fromY, toX, toY, targetX, targetY);
+    }
+    db[id] = new Canonical(id, leftId, rightId, leftMove, rightMove);
+  }
+  stream.close();
+  Log::info("Guru database successfully loaded from file");
+  return db;
 }

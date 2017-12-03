@@ -58,8 +58,8 @@ void Log::info(Board const* board) {
   std::cout << "  Unreachable > " << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << std::endl;
   std::cout << "                " << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true) << tileToFirstChar(TILE_BLANK, false) << tileToSecondChar(TILE_BLANK, false) << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true);
   std::cout << "                " << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << std::endl;
-  for (auto x = -1; x <= board->getWidth(); ++x) {
-    for (auto y = -1; y <= board->getHeight(); ++y) {
+  for (auto y = -1; y <= board->getHeight(); ++y) {
+    for (auto x = -1; x <= board->getWidth(); ++x) {
       std::cout << tileToFirstChar(board->get(x, y), isEven(x, y)) << tileToSecondChar(board->get(x, y), isEven(x, y));
     }
     std::cout << std::endl;
@@ -67,7 +67,7 @@ void Log::info(Board const* board) {
 }
 
 void Log::info(std::vector<Region*> const& regions) {
-  title("Nonzero games (" + std::to_string(regions.size()) + ")");
+  title("Non-zero games (" + std::to_string(regions.size()) + ")");
   for (auto region : regions) {
     std::cout << region->toString() << std::endl;
   }

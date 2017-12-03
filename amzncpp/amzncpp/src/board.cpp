@@ -143,7 +143,7 @@ std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
   std::vector<Region*> filteredRegions;
   for (auto region : regions) {
     if (!region->hasAmazons()) {
-      for (auto& tile : region->getTiles()) {
+      for (auto& tile : region->getTilePositions()) {
         tiles[board->index(tile.first, tile.second)] = TILE_OUT_OF_REACH;
       }
     }
@@ -198,7 +198,7 @@ int Board::getScope(Board const* board, Tile tile, int x, int y) {
 }
 
 int Board::index(int x, int y) const {
-  return height * x + y;
+  return x + y * width;
 }
 
 int Board::index(std::pair<int, int> const& p) const {

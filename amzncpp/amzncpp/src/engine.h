@@ -12,6 +12,7 @@ public:
   void operator=(Engine const&) = delete;
 private:
   Engine();
+  ~Engine() {}
 
   void report(Board const* board, TurnManager const* turn) const;
 };

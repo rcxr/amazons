@@ -1,12 +1,17 @@
 #pragma once
 #include <vector>
+#include "move.h"
 
 class Canonical {
 public:
-  static unsigned getId(std::vector<std::pair<int, int>> tiles);
+  static unsigned getId(std::vector<Tile> const& tiles, std::vector<std::pair<int, int>> const& positions);
   static std::string idToString(unsigned id);
-  explicit Canonical(unsigned id, unsigned left, unsigned right);
+
+  Canonical(unsigned id, unsigned leftId, unsigned rightId, Move const* const leftMove, Move const* const rightMove);
+
   unsigned const id;
-  unsigned const left;
-  unsigned const right;
+  unsigned const leftId;
+  unsigned const rightId;
+  Move const* const leftMove;
+  Move const* const rightMove;
 };

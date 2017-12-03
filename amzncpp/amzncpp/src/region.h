@@ -13,7 +13,7 @@ public:
   bool hasBlanks() const;
 
   void append(Tile tile, int x, int y);
-  std::vector<std::pair<int, int>> const& getTiles() const;
+  std::vector<std::pair<int, int>> const& getTilePositions() const;
 
   std::string toString() const;
 
@@ -24,5 +24,6 @@ private:
   int blanks;
   int left;
   int right;
-  std::vector<std::pair<int, int>> tiles;
+  std::vector<std::pair<int, int>> positions;
+  std::vector<Tile> tiles;
 };

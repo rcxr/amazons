@@ -3,6 +3,7 @@
 #include "input.h"
 #include "move.h"
 #include "calculator.h"
+#include "guru.h"
 
 Engine const& Engine::instance() {
   static Engine instance;
@@ -38,7 +39,11 @@ void Engine::run() const {
 }
 
 Engine::Engine() {
-  Log::info("Welcome to amzn.cpp! :)");
+  Log::title("Welcome to amzn.cpp! :)");
+  Log::info("Starting engine...");
+  Calculator::instance();
+  Guru::instance();
+  Log::info("Engine up and running");
 }
 
 void Engine::report(Board const* board, TurnManager const* turn) const {

@@ -3,7 +3,7 @@
 #define BOARD_DEFAULT_WIDTH 10
 #define BOARD_DEFAULT_HEIGHT 10
 
-#define CANONICAL_WIDTH 5
+#define CANONICAL_WIDTH 4
 #define CANONICAL_HEIGHT 4
 #define CANONICAL_INVALID_ID UINT_MAX
 
@@ -19,3 +19,5 @@
 #define CHAR_OUT_OF_REACH_ODD (char)177
 
 #define CHAR_BULLET (char)254
+
+#define GURU_DB_FILE "resources/guru.db"
