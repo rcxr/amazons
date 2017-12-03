@@ -84,11 +84,25 @@ Move* getMove(Player const& player) {
   return new Move(player, fromX, fromY, toX, toY, targetX, targetY);
 }
 
-Move* Input::getMove(Board const* board, TurnManager const* turn) {
-  Move* move = getMove(turn->getCurrent());
+Move* Input::getMove(Board const* board, Player const& player) {
+  Move* move = getMove(player);
   while (!board->isLegalMove(move)) {
     Log::error("That is not a valid move");
-    move = getMove(turn->getCurrent());
+    move = getMove(player);
   }
   return move;
+}
+
+CalculatorHeuristic Input::getMinMax() {
+  while (true) {
+    Log::info("Choose heuristic (minmax or maxmin)");
+    std::string h;
+    std::cin >> h;
+    if (0 == h.compare("min") || 0 == h.compare("minmax")) {
+      return CALCULATOR_HEURISTIC_MINMAX;
+    }
+    if (0 == h.compare("max") || 0 == h.compare("maxmin")) {
+      return CALCULATOR_HEURISTIC_MAXMIN;
+    }
+  }
 }

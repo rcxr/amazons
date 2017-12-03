@@ -1,14 +1,15 @@
 #pragma once
+#include "board.h"
 #include "turn.h"
-#include "move.h"
-
-class Board;
 
 class Engine {
 public:
-  static Engine const* const ENGINE;
+  static Engine const& instance();
 
   void run() const;
+
+  Engine(Engine const&) = delete;
+  void operator=(Engine const&) = delete;
 private:
   Engine();
 

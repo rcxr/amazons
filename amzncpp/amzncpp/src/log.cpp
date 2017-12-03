@@ -67,6 +67,14 @@ void Log::info(Board const* board) {
   }
 }
 
+void Log::info(std::pair<Move*, Board*> move) {
+  std::cout << "  From                > (" << move.first->getFromX() << ", " << move.first->getFromY() << ")" << std::endl;
+  std::cout << "  To                  > (" << move.first->getToX() << ", " << move.first->getToY() << ")" << std::endl;
+  std::cout << "  Target              > (" << move.first->getTargetX() << ", " << move.first->getTargetY() << ")" << std::endl;
+  std::cout << "  Left player scope   > " << move.second->getLeftScope() << std::endl;
+  std::cout << "  Right player scope  > " << move.second->getRightScope() << std::endl;
+}
+
 void Log::error(std::string const& message) {
   std::cout << "ERROR: " << message << std::endl;
 }

@@ -20,8 +20,6 @@ public:
   int getScope(Player const& player) const;
 
   std::vector<Move*> getMoves(Player const&) const;
-  void appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY) const;
-  void appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY, int toX, int toY) const;
   Board* apply(Move const* move) const;
   bool isLegalMove(Move const* move) const;
 
@@ -30,6 +28,9 @@ private:
   static void spreadRegion(Board const* board, bool* visited, Region* region, int x, int y);
   static int processScope(Board const* board, Player const& player);
   static int getScope(Board const*, Tile tile, int x, int y);
+
+  void appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY) const;
+  void appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY, int toX, int toY) const;
 
   int index(int x, int y) const;
   int index(std::pair<int, int> const& p) const;

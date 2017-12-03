@@ -2,8 +2,12 @@
 #include "log.h"
 #include "input.h"
 #include "move.h"
+#include "calculator.h"
 
-Engine const* const Engine::ENGINE = new Engine();
+Engine const& Engine::instance() {
+  static Engine instance;
+  return instance;
+}
 
 void Engine::run() const {
   bool active = true;
@@ -15,14 +19,9 @@ void Engine::run() const {
     while (board->getScope(turn->getCurrent())) {
       Log::clear();
       Log::info(board);
-      Move* move = nullptr;
-      if (turn->isTheirTurn(user)) {
-        move = Input::getMove(board, turn);
-      }
-      else {
-        move = Input::getMove(board, turn);
-      }
-
+      Move* move = turn->isTheirTurn(user)
+        ? Input::getMove(board, turn->getCurrent())
+        : Calculator::instance().calculateMove(board, turn->getCurrent());
       auto temp = board;
       board = board->apply(move);
       turn->nextTurn();
