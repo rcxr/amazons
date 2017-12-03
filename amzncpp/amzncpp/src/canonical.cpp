@@ -9,22 +9,21 @@ int index(std::pair<int, int> p) {
 unsigned getWeight(Tile tile, int index) {
   unsigned weight;
   switch (tile) {
-
-  case TILE_BLANK: weight = 3u;
-  case TILE_LEFT: weight = 2u;
-  case TILE_RIGHT: weight = 1u;
-  default: weight = 0u;
+  case TILE_BLANK: weight = 1u; break;
+  case TILE_LEFT: weight = 2u; break;
+  case TILE_RIGHT: weight = 3u; break;
+  default: weight = 0u; break;
   }
-  return weight << (index * 2);
+  return weight << index * 2;
 }
 
 unsigned Canonical::getId(std::vector<Tile> const& tiles, std::vector<std::pair<int, int>> const& positions) {
-  auto id = UINT_MAX;
+  auto id = 0u;
   for (auto i = 0; i < tiles.size(); ++i) {
     if (CANONICAL_WIDTH <= positions[i].first || CANONICAL_HEIGHT <= positions[i].second) {
       return CANONICAL_INVALID_ID;
     }
-    id = id ^ getWeight(tiles[i], index(positions[i]));
+    id += getWeight(tiles[i], index(positions[i]));
   }
   return id;
 }
