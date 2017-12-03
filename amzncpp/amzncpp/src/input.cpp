@@ -22,14 +22,14 @@ Board* parseFile(std::string const& filename) {
   }
 
   int tile;
-  auto data = new Tile[BOARD_DEFAULT_WIDTH * BOARD_DEFAULT_HEIGHT];
+  auto tiles = new Tile[BOARD_DEFAULT_WIDTH * BOARD_DEFAULT_HEIGHT];
   for (auto i = 0; i < BOARD_DEFAULT_WIDTH * BOARD_DEFAULT_HEIGHT; ++i) {
     stream >> tile;
-    data[i] = intToTile(tile);
+    tiles[i] = intToTile(tile);
   }
   stream.close();
 
-  auto board = new Board(data, BOARD_DEFAULT_WIDTH, BOARD_DEFAULT_HEIGHT);
+  auto board = new Board(tiles, BOARD_DEFAULT_WIDTH, BOARD_DEFAULT_HEIGHT);
   Log::info("Board successfully loaded from file");
   Log::info(board);
   return board;

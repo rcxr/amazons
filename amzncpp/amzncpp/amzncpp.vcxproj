@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="input\game.txt" />
+    <Text Include="input\test.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\board.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\region.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\board.h" />
@@ -126,6 +128,7 @@
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\player.h" />
+    <ClInclude Include="src\region.h" />
     <ClInclude Include="src\tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
