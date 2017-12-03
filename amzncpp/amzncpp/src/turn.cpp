@@ -1,6 +1,6 @@
 #include "turn.h"
 
-TurnManager::TurnManager(Player const& player): current(player.getType()), count(0) {}
+TurnManager::TurnManager(Player const& player) : current(player.getType()), count(0) {}
 
 Player const& TurnManager::getCurrent() const {
   return Player::instance(current);

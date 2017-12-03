@@ -11,7 +11,7 @@ Player const& Player::instanceRight() {
 }
 
 Player const& Player::instance(PlayerType type) {
-  switch(type) {
+  switch (type) {
   case PLAYER_TYPE_LEFT: return instanceLeft();
   case PLAYER_TYPE_RIGHT: return instanceRight();
   default: throw;
