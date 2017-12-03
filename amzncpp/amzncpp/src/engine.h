@@ -9,5 +9,5 @@ public:
 private:
   Engine() {}
 
-  void reportLoser(Player const& player, int moves) const;
+  void reportLoser(Player const& player) const;
 };
