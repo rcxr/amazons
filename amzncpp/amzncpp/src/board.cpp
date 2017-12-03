@@ -6,8 +6,8 @@ Board::Board(Tile* tiles, int width, int height) :
   tiles(tiles),
   width(width),
   height(height),
-  leftScope(processScope(this, PLAYER_TYPE_LEFT)),
-  rightScope(processScope(this, PLAYER_TYPE_RIGHT)),
+  leftScope(processScope(this, Player::instanceLeft())),
+  rightScope(processScope(this, Player::instanceRight())),
   regions(processRegions(this, tiles)) {}
 
 Board::~Board() {
@@ -50,6 +50,57 @@ int Board::getRightScope() const {
 
 int Board::getScope(Player const& player) const {
   return player.isLeft() ? leftScope : rightScope;
+}
+
+std::vector<Move*> Board::getMoves(Player const& player) const {
+  std::vector<Move*> moves;
+  for (auto x = 0; x < width; ++x) {
+    for (auto y = 0; y < height; ++y) {
+      appendMoves(moves, player, x, y);
+    }
+  }
+  return moves;
+}
+
+void Board::appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY) const {
+  if (player.getTile() != get(fromX, fromY)) {
+    return;
+  }
+  for (auto i = 1; TILE_BLANK == get(fromX - i, fromY - i); ++i) { appendMoves(moves, player, fromX, fromY, fromX - i, fromY - i); }
+  for (auto i = 1; TILE_BLANK == get(fromX - i, fromY + i); ++i) { appendMoves(moves, player, fromX, fromY, fromX - i, fromY + i); }
+  for (auto i = 1; TILE_BLANK == get(fromX + i, fromY - i); ++i) { appendMoves(moves, player, fromX, fromY, fromX + i, fromY - i); }
+  for (auto i = 1; TILE_BLANK == get(fromX + i, fromY + i); ++i) { appendMoves(moves, player, fromX, fromY, fromX + i, fromY + i); }
+  for (auto i = 1; TILE_BLANK == get(fromX - i, fromY); ++i) { appendMoves(moves, player, fromX, fromY, fromX - i, fromY); }
+  for (auto i = 1; TILE_BLANK == get(fromX + i, fromY); ++i) { appendMoves(moves, player, fromX, fromY, fromX + i, fromY); }
+  for (auto i = 1; TILE_BLANK == get(fromX, fromY - i); ++i) { appendMoves(moves, player, fromX, fromY, fromX, fromY - i); }
+  for (auto i = 1; TILE_BLANK == get(fromX, fromY + i); ++i) { appendMoves(moves, player, fromX, fromY, fromX, fromY + i); }
+}
+
+void Board::appendMoves(std::vector<Move*>& moves, Player const& player, int fromX, int fromY, int toX, int toY) const {
+  for (auto i = 1; fromX == toX - i && fromY == toY - i || TILE_BLANK == get(toX - i, toY - i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX - i, toY - i));
+  }
+  for (auto i = 1; fromX == toX - i && fromY == toY + i || TILE_BLANK == get(toX - i, toY + i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX - i, toY + i));
+  }
+  for (auto i = 1; fromX == toX + i && fromY == toY - i || TILE_BLANK == get(toX + i, toY - i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX + i, toY - i));
+  }
+  for (auto i = 1; fromX == toX + i && fromY == toY + i || TILE_BLANK == get(toX + i, toY + i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX + i, toY + i));
+  }
+  for (auto i = 1; fromX == toX - i && fromY == toY || TILE_BLANK == get(toX - i, toY); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX - i, toY));
+  }
+  for (auto i = 1; fromX == toX + i && fromY == toY || TILE_BLANK == get(toX + i, toY); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX + i, toY));
+  }
+  for (auto i = 1; fromX == toX && fromY == toY - i || TILE_BLANK == get(toX, toY - i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX, toY - i));
+  }
+  for (auto i = 1; fromX == toX && fromY == toY + i || TILE_BLANK == get(toX, toY + i); ++i) {
+    moves.push_back(new Move(player, fromX, fromY, toX, toY, toX, toY + i));
+  }
 }
 
 Board* Board::apply(Move const* move) const {
@@ -116,11 +167,11 @@ void Board::spreadRegion(Board const* board, bool* visited, Region* region, int 
   spreadRegion(board, visited, region, x, y + 1);
 }
 
-int Board::processScope(Board const* board, PlayerType playerType) {
+int Board::processScope(Board const* board, Player const& player) {
   auto scope = 0;
   for (auto x = 0; x < board->width; ++x) {
     for (auto y = 0; y < board->height; ++y) {
-      scope += getScope(board, Player::instance(playerType).getTile(), x, y);
+      scope += getScope(board, player.getTile(), x, y);
     }
   }
   return scope;
