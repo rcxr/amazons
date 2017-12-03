@@ -13,3 +13,5 @@
 #define CHAR_OUT_OF_BOARD (char)219
 #define CHAR_OUT_OF_REACH_EVEN (char)176
 #define CHAR_OUT_OF_REACH_ODD (char)177
+
+#define CHAR_BULLET (char)254

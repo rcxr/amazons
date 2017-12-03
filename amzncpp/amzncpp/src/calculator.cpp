@@ -18,10 +18,8 @@ Move* Calculator::calculateMove(Board const* board, Player const& player) const 
   }
   auto maxMin = calculateMaxMinMove(results, player);
   auto minMax = calculateMinMaxMove(results, player);
-  Log::title("minmax");
-  Log::info(minMax);
-  Log::title("maxmin");
-  Log::info(maxMin);
+  Log::info("minmax", minMax);
+  Log::info("maxmin", maxMin);
   auto chosen = CALCULATOR_HEURISTIC_MAXMIN == Input::getMinMax() ? maxMin.first : minMax.first;
   for (auto result : results) {
     if (result.first != chosen) {
