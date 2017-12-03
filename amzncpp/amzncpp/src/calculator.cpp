@@ -33,10 +33,10 @@ Move* Calculator::calculateMove(Board const* board, Player const& player) const 
 }
 
 std::pair<Move*, Board*> Calculator::calculateMinMaxMove(std::vector<std::pair<Move*, Board*>> const& results, Player const& player) {
-  auto best = -1;
+  auto best = UINT_MAX;
   auto max = INT_MIN;
   auto min = INT_MAX;
-  for (auto i = 0; i < results.size(); ++i) {
+  for (auto i = 0u; i < results.size(); ++i) {
     auto board = results[i].second;
     if (board->getScope(player.next()) < min || board->getScope(player.next()) == min && max < board->getScope(player)) {
       max = board->getScope(player);
@@ -48,10 +48,10 @@ std::pair<Move*, Board*> Calculator::calculateMinMaxMove(std::vector<std::pair<M
 }
 
 std::pair<Move*, Board*> Calculator::calculateMaxMinMove(std::vector<std::pair<Move*, Board*>> const& results, Player const& player) {
-  auto best = -1;
+  auto best = UINT_MAX;
   auto max = INT_MIN;
   auto min = INT_MAX;
-  for (auto i = 0; i < results.size(); ++i) {
+  for (auto i = 0u; i < results.size(); ++i) {
     auto board = results[i].second;
     if (max < board->getScope(player) || max == board->getScope(player) && board->getScope(player.next()) < min) {
       max = board->getScope(player);
