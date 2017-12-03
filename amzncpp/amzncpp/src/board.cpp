@@ -36,7 +36,7 @@ Tile Board::get(int x, int y) const {
   return tiles[index(x, y)];
 }
 
-Tile Board::get(std::pair<int, int> p) const {
+Tile Board::get(std::pair<int, int> const& p) const {
   return get(p.first, p.second);
 }
 
@@ -52,7 +52,16 @@ int Board::getScope(Player const& player) const {
   return player.isLeft() ? leftScope : rightScope;
 }
 
-bool Board::isLegalMove(Move* move) const {
+Board* Board::apply(Move const* move) const {
+  auto tiles = new Tile[width * height];
+  memcpy(tiles, this->tiles, width * height * sizeof Tile);
+  tiles[index(move->getFrom())] = TILE_BLANK;
+  tiles[index(move->getTo())] = move->getPlayer().getTile();
+  tiles[index(move->getTarget())] = TILE_VOID;
+  return new Board(tiles, width, height);
+}
+
+bool Board::isLegalMove(Move const* move) const {
   return move && move->getFrom() != move->getTo()
     && move->getTo() != move->getTarget()
     && move->getPlayer().getTile() == get(move->getFrom())
@@ -137,20 +146,24 @@ int Board::index(int x, int y) const {
   return height * x + y;
 }
 
+int Board::index(std::pair<int, int> const& p) const {
+  return index(p.first, p.second);
+}
+
 bool Board::isClear(int fromX, int fromY, int toX, int toY, int skipX, int skipY) const {
-  int dX = toX - fromX;
-  int dY = toY - fromY;
+  int dX = fromX - toX;
+  int dY = fromY - toY;
   if (dX && dY && abs(dX) != abs(dY)) {
     return false;
   }
   int stepX = dX < 0 ? -1 : 0 < dX ? 1 : 0;
-  int stepY = dY < 0 ? 1 : 0 < dY ? -1 : 0;
-  while (fromX != toX && fromY != toY) {
-    if ((fromX != skipX || fromY != skipY) && TILE_BLANK != get(fromX, fromY)) {
+  int stepY = dY < 0 ? -1 : 0 < dY ? 1 : 0;
+  while (toX != fromX || toY != fromY) {
+    if ((toX != skipX || toY != skipY) && TILE_BLANK != get(toX, toY)) {
       return false;
     }
-    fromX += stepX;
-    fromY += stepY;
+    toX += stepX;
+    toY += stepY;
   }
   return true;
 }

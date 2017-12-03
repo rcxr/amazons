@@ -22,11 +22,15 @@ void Engine::run() const {
       else {
         move = Input::getMove(board, turn);
       }
+
+      auto temp = board;
+      board = board->apply(move);
       turn->nextTurn();
+
+      delete temp;
       delete move;
     }
-    report(turn);
-
+    report(board, turn);
     delete board;
     delete turn;
 
@@ -38,12 +42,15 @@ Engine::Engine() {
   Log::info("Welcome to amzn.cpp! :)");
 }
 
-void Engine::report(TurnManager const* turn) const {
+void Engine::report(Board const* board, TurnManager const* turn) const {
+  Log::clear();
+  Log::info(board);
+  Log::title("Result");
   Log::info("After "
     + std::to_string(turn->getCount())
-    + " moves, "
+    + " moves "
     + turn->getCurrent().getLabel()
-    + " cannot move. "
+    + " cannot move and "
     + turn->getCurrent().next().getLabel()
     + " has won! :D");
 }

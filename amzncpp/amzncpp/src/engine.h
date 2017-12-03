@@ -12,5 +12,5 @@ public:
 private:
   Engine();
 
-  void report(TurnManager const* turn) const;
+  void report(Board const* board, TurnManager const* turn) const;
 };
