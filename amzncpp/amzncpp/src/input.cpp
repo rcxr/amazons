@@ -63,3 +63,28 @@ Player const& Input::getPlayer() {
     }
   }
 }
+
+bool Input::getRetry() {
+  while (true) {
+    Log::info("Would you like to play again?");
+    std::string in;
+    std::cin >> in;
+    if (0 == in.compare("yes") || 0 == in.compare("y")) {
+      return true;
+    }
+    if (0 == in.compare("no") || 0 == in.compare("n")) {
+      return false;
+    }
+  }
+}
+
+Move* Input::getMove(Player const& player) {
+  Log::info("Make a move for " + player.getLabel());
+  Log::info("You need to type six numbers");
+  Log::info("Two numbers for the row and column of the amazon you want to use");
+  Log::info("Two numbers for the row and column of the destination tile");
+  Log::info("Two numbers for the row and column of the tile the amazon will shoot");
+  int fromX, fromY, toX, toY, targetX, targetY;
+  std::cin >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
+  return new Move(player, fromX, fromY, toX, toY, targetX, targetY);
+}

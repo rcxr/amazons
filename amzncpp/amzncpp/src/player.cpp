@@ -22,6 +22,10 @@ Tile Player::getTile() const {
   return isLeft() ? TILE_LEFT : TILE_RIGHT;
 }
 
+PlayerType Player::getType() const {
+  return type;
+}
+
 std::string Player::getLabel() const {
   return isLeft() ? "left" : "right";
 }

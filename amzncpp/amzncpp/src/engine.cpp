@@ -1,26 +1,49 @@
 #include "engine.h"
 #include "log.h"
 #include "input.h"
+#include "move.h"
 
 Engine const* const Engine::ENGINE = new Engine();
 
 void Engine::run() const {
-  Log::info("Welcome to amzn.cpp! :)");
- 
   bool active = true;
   while (active) {
-    Board* board = Input::getBoard();
-    Player const& userPlayer = Input::getPlayer();
-    Player const& currentPlayer = Player::instanceLeft();
+    auto board = Input::getBoard();
+    auto& user = Input::getPlayer();
 
-    int moves = 0;
-    while (board->getScope(currentPlayer)) {
+    auto turn = new TurnManager(Player::instanceLeft());
+    while (board->getScope(turn->getCurrent())) {
+      Move* move = nullptr;
+      if (turn->isTheirTurn(user)) {
+        move = Input::getMove(turn->getCurrent());
+      } else {
+        move = Input::getMove(turn->getCurrent());
+      }
+      if (board->isLegalMove(turn->getCurrent(), move)) {
+        // Perform move
+        turn->nextTurn();
+      }
+      delete move;
     }
-    reportLoser(currentPlayer);
+    report(turn);
+
     delete board;
+    delete turn;
+
+    active = Input::getRetry();
   }
 }
 
-void Engine::reportLoser(Player const& loser) const {
-  Log::info(loser.getLabel() + " cannot move. " + loser.next().getLabel() + "has won! :D");
+Engine::Engine() {
+  Log::info("Welcome to amzn.cpp! :)");
+}
+
+void Engine::report(TurnManager const* turn) const {
+  Log::info("After "
+    + std::to_string(turn->getCount())
+    + " moves, "
+    + turn->getCurrent().getLabel()
+    + " cannot move. "
+    + turn->getCurrent().next().getLabel()
+    + " has won! :D");
 }

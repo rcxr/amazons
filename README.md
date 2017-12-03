@@ -3,7 +3,7 @@
 My MAT564 Combinatorial Game Theory final project
 
 # Features
-- Optimal play for tree of height three or less.
+- Optimal play for tree of height three or less
 * Scope
 - Max/Min
 - Mix/Max
@@ -26,7 +26,10 @@ My MAT564 Combinatorial Game Theory final project
   * \*.txt
 - Conway notation
 - JavaScript UI
-- Util
+  - Util
   * Load game
   * Print board to screen
   - Get a move
+
+
+20 < log(2^32)/log(3)

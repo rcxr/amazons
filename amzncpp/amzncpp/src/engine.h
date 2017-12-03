@@ -1,5 +1,5 @@
 #pragma once
-#include "player.h"
+#include "turn.h"
 
 class Engine {
 public:
@@ -7,7 +7,7 @@ public:
 
   void run() const;
 private:
-  Engine() {}
+  Engine();
 
-  void reportLoser(Player const& player) const;
+  void report(TurnManager const* turn) const;
 };

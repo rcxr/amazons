@@ -36,8 +36,20 @@ Tile Board::get(int x, int y) const {
   return tiles[index(x, y)];
 }
 
+Tile Board::get(std::pair<int, int> p) const {
+  return get(p.first, p.second);
+}
+
 int Board::getScope(Player const& player) const {
   return player.isLeft() ? leftScope : rightScope;
+}
+
+bool Board::isLegalMove(Player const& player, Move* move) const {
+  return move->getFrom() != move->getTo()
+    && move->getTo() != move->getTarget()
+    && player.getTile() == get(move->getFrom())
+    && isClear(move->getFromX(), move->getFromY(), move->getToX(), move->getToY(), move->getFromX(), move->getFromY())
+    && isClear(move->getToX(), move->getToY(), move->getTargetX(), move->getTargetY(), move->getFromX(), move->getFromY());
 }
 
 std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
@@ -115,6 +127,24 @@ int Board::getScope(Board const* board, Tile tile, int x, int y) {
 
 int Board::index(int x, int y) const {
   return height * x + y;
+}
+
+bool Board::isClear(int fromX, int fromY, int toX, int toY, int skipX, int skipY) const {
+  int dX = toX - fromX;
+  int dY = toY - fromY;
+  if (dX && dY && abs(dX) != abs(dY)) {
+    return false;
+  }
+  int stepX = dX < 0 ? -1 : 0 < dX ? 1 : 0;
+  int stepY = dY < 0 ? 1 : 0 < dY ? -1 : 0;
+  while (fromX != toX && fromY != toY) {
+    if ((fromX != skipX || fromY != skipY) && TILE_BLANK != get(fromX, fromY)) {
+      return false;
+    }
+    fromX += stepX;
+    fromY += stepY;
+  }
+  return true;
 }
 
 bool Board::isOutOfBoard(int x, int y) const {

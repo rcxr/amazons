@@ -120,8 +120,10 @@
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\move.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\region.cpp" />
+    <ClCompile Include="src\turn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\board.h" />
@@ -129,9 +131,11 @@
     <ClInclude Include="src\engine.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\move.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\region.h" />
     <ClInclude Include="src\tile.h" />
+    <ClInclude Include="src\turn.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

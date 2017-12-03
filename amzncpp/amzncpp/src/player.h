@@ -13,7 +13,7 @@ public:
   static Player const& instance(PlayerType type);
 
   Tile getTile() const;
-
+  PlayerType getType() const;
   std::string getLabel() const;
 
   bool isLeft() const;
