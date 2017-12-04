@@ -3,8 +3,12 @@
 #include "canonical.h"
 #include "config.h"
 
+int index(int x, int y) {
+  return CANONICAL_COLS * x + y;
+}
+
 int index(std::pair<int, int> p) {
-  return CANONICAL_COLS * p.first + p.second;
+  return index(p.first, p.second);
 }
 
 Tile getTile(unsigned tile) {
@@ -29,7 +33,7 @@ unsigned getWeight(Tile tile, int index) {
 
 unsigned Canonical::getId(std::vector<Tile> const& tiles, std::vector<std::pair<int, int>> const& positions) {
   auto id = 0u;
-  for (auto i = 0; i < tiles.size(); ++i) {
+  for (auto i = 0u; i < tiles.size(); ++i) {
     if (CANONICAL_ROWS <= positions[i].first || CANONICAL_COLS <= positions[i].second) {
       return CANONICAL_INVALID_ID;
     }
@@ -49,6 +53,26 @@ Tile* Canonical::getTiles(unsigned id) {
     id = id >> 2;
   }
   return tiles;
+}
+
+bool Canonical::isValid(unsigned id) {
+  auto tiles = getTiles(id);
+  auto firstCol = false;
+  auto firstRow = false;
+  for (auto x = 0; x < CANONICAL_ROWS; ++x) {
+    if (TILE_VOID != tiles[index(x, 0)]) {
+      firstCol = true;
+      break;
+    }
+  }
+  for (auto y = 0; y < CANONICAL_COLS; ++y) {
+    if (TILE_VOID != tiles[index(0, y)]) {
+      firstRow = true;
+      break;
+    }
+  }
+  delete tiles;
+  return firstCol && firstRow;
 }
 
 Canonical::Canonical(unsigned id, Move const* const leftMove, Move const* const rightMove) :

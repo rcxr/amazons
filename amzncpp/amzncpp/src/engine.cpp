@@ -44,7 +44,7 @@ void Engine::train() const {
   bool active = true;
   auto id = 0u;
   while (active) {
-    if (Guru::instance().knows(id)) {
+    if (Canonical::isValid(id) || Guru::instance().knows(id)) {
       ++id;
       continue;
     }
