@@ -48,12 +48,12 @@ Board* parseBoardFile(std::string const& filename) {
   }
 
   // Creating dynamic array and setting first position that we already got
-  Tile* tiles = new Tile[rows * cols];
-  tiles[0] = intToTile(tile);
+  std::vector<Tile> tiles;
+  tiles.push_back(intToTile(tile));
 
   for (auto i = 1; i < rows * cols; ++i) {
     stream >> tile;
-    tiles[i] = intToTile(tile);
+    tiles.push_back(intToTile(tile));
   }
   stream.close();
 

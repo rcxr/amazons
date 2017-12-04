@@ -2,7 +2,7 @@
 #include "canonical.h"
 #include "config.h"
 
-Board::Board(Tile* tiles, int rows, int cols) :
+Board::Board(std::vector<Tile> tiles, int rows, int cols) :
   tiles(tiles),
   rows(rows),
   cols(cols),
@@ -16,7 +16,6 @@ Board::~Board() {
   for (auto region : regions) {
     delete region;
   }
-  delete[] tiles;
 }
 
 std::vector<Region*> const& Board::getRegions() const {
@@ -110,8 +109,7 @@ void Board::appendMoves(std::vector<Move*>& moves, Player const& player, int fro
 }
 
 Board* Board::apply(Move const* move) const {
-  auto tiles = new Tile[rows * cols];
-  memcpy(tiles, this->tiles, rows * cols * sizeof Tile);
+  auto tiles = this->tiles;
   tiles[index(move->getFrom())] = TILE_BLANK;
   tiles[index(move->getTo())] = move->getPlayer().getTile();
   tiles[index(move->getTarget())] = TILE_VOID;
@@ -126,7 +124,7 @@ bool Board::isLegalMove(Move const* move) const {
     && isClear(move->getToX(), move->getToY(), move->getTargetX(), move->getTargetY(), move->getFromX(), move->getFromY());
 }
 
-std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
+std::vector<Region*> Board::processRegions(Board const* board, std::vector<Tile> tiles) {
   int id = 0;
   std::vector<Region*> regions;
   auto visited = new bool[board->getSize()];

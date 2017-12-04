@@ -46,10 +46,10 @@ std::string Canonical::idToString(unsigned id) {
   return CANONICAL_INVALID_ID == id ? "?" : std::to_string(id);
 }
 
-Tile* Canonical::getTiles(unsigned id) {
-  auto tiles = new Tile[CANONICAL_ROWS * CANONICAL_COLS];
+std::vector<Tile> Canonical::getTiles(unsigned id) {
+  std::vector<Tile> tiles;
   for (auto i = 0; i < CANONICAL_ROWS * CANONICAL_COLS; ++i) {
-    tiles[i] = getTile(id & 3u);
+    tiles.push_back(getTile(id & 3u));
     id = id >> 2;
   }
   return tiles;
@@ -71,7 +71,6 @@ bool Canonical::isValid(unsigned id) {
       break;
     }
   }
-  delete tiles;
   return firstCol && firstRow;
 }
 

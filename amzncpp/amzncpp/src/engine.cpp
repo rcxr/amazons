@@ -44,11 +44,16 @@ void Engine::train() const {
   bool active = true;
   auto id = 0u;
   while (active) {
-    if (Canonical::isValid(id) || Guru::instance().knows(id)) {
+    if (!Canonical::isValid(id) || Guru::instance().knows(id)) {
       ++id;
       continue;
     }
     auto board = new Board(id);
+    if (1u < board->getRegions().size()) {
+      ++id;
+      delete board;
+      continue;
+    }
     Log::clear();
     Log::info(board);
     Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft());
