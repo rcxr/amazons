@@ -106,8 +106,11 @@ bool Input::getAnswer(std::string const& message) {
 
 Move* getMove(Player const& player) {
   Log::info("Make a move for " + player.getLabel() + " (\"fromRow fromCol toRow toCol targetRow targetCol\")");
+  std::string line;
+  getline(std::cin >> std::ws, line);
   int fromX, fromY, toX, toY, targetX, targetY;
-  std::cin >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
+  std::stringstream s(line);
+  s >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
   return new Move(player, fromX, fromY, toX, toY, targetX, targetY);
 }
 
@@ -115,6 +118,7 @@ Move* Input::getMove(Board const* board, Player const& player) {
   Move* move = getMove(player);
   while (!board->isLegalMove(move)) {
     Log::error("That is not a valid move");
+    delete move;
     move = getMove(player);
   }
   return move;
