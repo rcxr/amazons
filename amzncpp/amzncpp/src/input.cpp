@@ -81,7 +81,7 @@ Player const& Input::getPlayer() {
     Log::info("Choose player (\"left\" or \"l\" for left, \"right\" or \"r\" for right)");
     std::string player;
     getline(std::cin >> std::ws, player);
-    if (0 == player.compare("left") || 0 == player.compare("l") || player.empty()) {
+    if (0 == player.compare("left") || 0 == player.compare("l")) {
       return Player::instanceLeft();
     }
     if (0 == player.compare("right") || 0 == player.compare("r")) {
@@ -92,10 +92,10 @@ Player const& Input::getPlayer() {
 
 bool Input::getAnswer(std::string const& message) {
   while (true) {
-    Log::info(message + " (\"yes\" or \"y\" for yes, \"no\", \"n\" for no)");
+    Log::info(message + " (\"yes\" or \"y\" for yes, \"no\" or \"n\" for no)");
     std::string in;
     getline(std::cin >> std::ws, in);
-    if (0 == in.compare("yes") || 0 == in.compare("y") || in.empty()) {
+    if (0 == in.compare("yes") || 0 == in.compare("y")) {
       return true;
     }
     if (0 == in.compare("no") || 0 == in.compare("n")) {
@@ -129,13 +129,28 @@ CalculatorHeuristic Input::getMinMax() {
     Log::info("Choose heuristic (\"minmax\" or \"min\" for mixman, \"maxmin\" or \"max\" for maxmin)");
     std::string h;
     getline(std::cin >> std::ws, h);
-    if (0 == h.compare("min") || 0 == h.compare("minmax") || h.empty()) {
+    if (0 == h.compare("min") || 0 == h.compare("minmax")) {
       return CALCULATOR_HEURISTIC_MINMAX;
     }
     if (0 == h.compare("max") || 0 == h.compare("maxmin")) {
       return CALCULATOR_HEURISTIC_MAXMIN;
     }
   }
+}
+
+unsigned Input::getGuruHelp(std::set<unsigned> const& canonicalIds) {
+  Log::info("Hey, your favorite guru here... I can play optimally in " + std::to_string(canonicalIds.size()) + " subgames");
+  if (!getAnswer("Would you like me to play?")) {
+    return CANONICAL_INVALID_ID;
+  }
+  for (auto canonicalId : canonicalIds) {
+    Log::info(canonicalId);
+    if (getAnswer("What about playing here?")) {
+      return canonicalId;
+    }
+  }
+  Log::info("Sorry, that is all I know for now. I will keep training hard!");
+  return CANONICAL_INVALID_ID;
 }
 
 std::map<unsigned, Canonical const*> Input::getGuruDB(std::string const& filename) {
@@ -187,15 +202,14 @@ void Input::saveCanonical(unsigned id) {
     Log::error("File could not be opened. Canonical position will not be saved :(");
     return;
   }
-  auto board = new Board(id);
-  stream << -1 << ' ' << board->getRows() << ' ' << board->getCols() << std::endl;
-  for (auto x = 0; x < board->getRows(); ++x) {
-    for (auto y = 0; y < board->getCols(); ++y) {
-      stream << tileToInt(board->get(x, y)) << ' ';
+  Board board(id);
+  stream << -1 << ' ' << board.getRows() << ' ' << board.getCols() << std::endl;
+  for (auto x = 0; x < board.getRows(); ++x) {
+    for (auto y = 0; y < board.getCols(); ++y) {
+      stream << tileToInt(board.get(x, y)) << ' ';
     }
     stream << std::endl;
   }
   stream.close();
   Log::info("Canonical position successfully saved to file");
-  delete board;
 }

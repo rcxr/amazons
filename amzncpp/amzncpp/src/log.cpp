@@ -45,6 +45,27 @@ void Log::info(std::string const& message) {
   std::cout << message << std::endl;
 }
 
+void Log::info(unsigned canonicalId) {
+  Board board(canonicalId);
+  title("Canonical position " + std::to_string(canonicalId));
+  auto maxX = INT_MIN;
+  auto maxY = INT_MIN;
+  for (auto x = 0; x < board.getRows(); ++x) {
+    for (auto y = 0; y < board.getCols(); ++y) {
+      if (TILE_VOID != board.get(x, y)) {
+        maxX = maxX < x ? x : maxX;
+        maxY = maxY < y ? y : maxY;
+      }
+    }
+  }
+  for (auto x = 0; x <= maxX; ++x) {
+    for (auto y = 0; y <= maxY; ++y) {
+      std::cout << tileToFirstChar(board.get(x, y), isEven(x, y)) << tileToSecondChar(board.get(x, y), isEven(x, y));
+    }
+    std::cout << std::endl;
+  }
+}
+
 void Log::info(Board const* board) {
   title("Stats");
   std::cout << "  Left scope = " << board->getLeftScope() << ",  Right scope = " << board->getRightScope() << std::endl;

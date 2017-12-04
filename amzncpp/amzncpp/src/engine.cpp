@@ -22,9 +22,12 @@ void Engine::run() const {
     while (board->getScope(turn->getCurrent())) {
       Log::clear();
       Log::info(board);
-      Move* move = turn->isTheirTurn(user)
-        ? Input::getMove(board, turn->getCurrent())
-        : Calculator::instance().calculateMove(board, turn->getCurrent());
+      Move* move = Calculator::instance().calculateGuruMove(board, turn->getCurrent());
+      if (!move) {
+        move = turn->isTheirTurn(user)
+          ? Input::getMove(board, turn->getCurrent())
+          : Calculator::instance().calculateMove(board, turn->getCurrent());
+      }
       auto temp = board;
       board = board->apply(move);
       turn->nextTurn();
@@ -56,23 +59,21 @@ void Engine::train() const {
       canonical = Guru::instance().ask(minusId)->negative();
     }
     else {
-      auto board = new Board(id);
-      if (1u < board->getAllRegions().size() ||
-        !board->getLeftScope() && !board->getRightScope() ||
-        3 < board->getPlayableRegions()[0]->getBlanks()) {
+      Board board(id);
+      if (1u < board.getAllRegions().size() ||
+        !board.getLeftScope() && !board.getRightScope() ||
+        3 < board.getPlayableRegions()[0]->getBlanks()) {
         ++id;
-        delete board;
         continue;
       }
       Log::clear();
-      Log::info(board);
+      Log::info(&board);
       bool asked = false;
-      Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft(), &asked);
-      Move* rightMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceRight(), &asked);
+      Move* leftMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceLeft(), &asked);
+      Move* rightMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceRight(), &asked);
       if (!asked || Input::getAnswer("Confirm action")) {
         canonical = new Canonical(id, leftMove, rightMove);
       }
-      delete board;
     }
     if (canonical) {
       Guru::instance().learn(canonical);

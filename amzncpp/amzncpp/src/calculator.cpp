@@ -1,6 +1,9 @@
+#include <set>
 #include "calculator.h"
 #include "input.h"
 #include "log.h"
+#include "guru.h"
+#include "config.h"
 
 Calculator& Calculator::instance() {
   static Calculator instance;
@@ -43,6 +46,29 @@ Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player, b
   }
   *asked = true;
   return Input::getMove(board, player);
+}
+
+Move* Calculator::calculateGuruMove(Board const* board, Player const& player) const {
+  std::set<unsigned> canonicalIds;
+  for (auto region : board->getPlayableRegions()) {
+    auto canonicalId = region->getCanonicalId();
+    if (Guru::instance().knows(canonicalId)) {
+      canonicalIds.insert(canonicalId);
+    }
+  }
+  if (canonicalIds.empty()) {
+    return nullptr;
+  }
+  unsigned canonicalId = Input::getGuruHelp(canonicalIds);
+  if (CANONICAL_INVALID_ID == canonicalId) {
+    return nullptr;
+  }
+  for (auto region : board->getPlayableRegions()) {
+    if (canonicalId == region->getCanonicalId()) {
+      return Guru::instance().ask(canonicalId)->getMove(player)->translate(region->getCanonicalDelta());
+    }
+  }
+  throw;
 }
 
 Calculator::Calculator() {

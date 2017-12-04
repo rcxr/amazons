@@ -12,6 +12,8 @@ public:
 
   Canonical(unsigned id, Move const* const leftMove, Move const* const rightMove);
 
+  Move const* getMove(Player const& player) const;
+
   Canonical* negative() const;
 
   std::string toString() const;

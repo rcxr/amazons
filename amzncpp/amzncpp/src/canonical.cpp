@@ -99,6 +99,10 @@ Canonical::Canonical(unsigned id, Move const* const leftMove, Move const* const 
   leftMove(leftMove),
   rightMove(rightMove) {}
 
+Move const* Canonical::getMove(Player const& player) const {
+  return player.isLeft() ? leftMove : rightMove;
+}
+
 Canonical* Canonical::negative() const {
   auto negativeLeftMove = leftMove ? leftMove->negative() : nullptr;
   auto negativeRightMove = rightMove ? rightMove->negative() : nullptr;

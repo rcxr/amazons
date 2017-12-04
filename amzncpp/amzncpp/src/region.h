@@ -18,6 +18,7 @@ public:
   std::vector<std::pair<int, int>> const& getTilePositions() const;
 
   std::string toString() const;
+  std::pair<int, int> getCanonicalDelta() const;
 
 private:
   int const id;

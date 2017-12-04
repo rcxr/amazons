@@ -29,3 +29,7 @@ std::string Move::toString() const {
 Move* Move::negative() const {
   return new Move(player.next(), getFromX(), getFromY(), getToX(), getToY(), getTargetX(), getTargetY());
 }
+
+Move* Move::translate(std::pair<int, int> d) const {
+  return new Move(player, getFromX() + d.first, getFromY() + d.second, getToX() + d.first, getToY() + d.second, getTargetX() + d.first, getTargetY() + d.second);
+}

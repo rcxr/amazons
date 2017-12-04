@@ -63,3 +63,7 @@ std::string Region::toString() const {
     ')';
   return s.str();
 }
+
+std::pair<int, int> Region::getCanonicalDelta() const {
+  return std::make_pair(minX, minY);
+}

@@ -17,6 +17,7 @@ public:
 
   std::string toString() const;
   Move* negative() const;
+  Move* translate(std::pair<int, int> d) const;
 
 private:
   Player const& player;
