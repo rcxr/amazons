@@ -25,3 +25,7 @@ std::string Move::toString() const {
     target.first << ' ' << target.second;
   return s.str();
 }
+
+Move* Move::negative() const {
+  return new Move(player.next(), getFromX(), getFromY(), getToX(), getToY(), getTargetX(), getTargetY());
+}

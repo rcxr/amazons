@@ -16,6 +16,7 @@ public:
   int getTargetY() const;
 
   std::string toString() const;
+  Move* negative() const;
 
 private:
   Player const& player;

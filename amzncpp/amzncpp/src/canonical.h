@@ -8,8 +8,11 @@ public:
   static std::string idToString(unsigned id);
   static std::vector<Tile> getTiles(unsigned id);
   static bool isValid(unsigned id);
+  static unsigned negative(unsigned id);
 
   Canonical(unsigned id, Move const* const leftMove, Move const* const rightMove);
+
+  Canonical* negative() const;
 
   std::string toString() const;
 

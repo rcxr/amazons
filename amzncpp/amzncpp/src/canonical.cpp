@@ -3,6 +3,14 @@
 #include "canonical.h"
 #include "config.h"
 
+Tile inverse(Tile tile) {
+  switch (tile) {
+  case TILE_LEFT: return TILE_RIGHT;
+  case TILE_RIGHT: return TILE_LEFT;
+  default: return tile;
+  }
+}
+
 int index(int x, int y) {
   return CANONICAL_COLS * x + y;
 }
@@ -74,10 +82,28 @@ bool Canonical::isValid(unsigned id) {
   return firstCol && firstRow;
 }
 
+unsigned Canonical::negative(unsigned id) {
+  auto tiles = getTiles(id);
+  std::vector<std::pair<int, int>> positions;
+  for (auto x = 0; x < CANONICAL_ROWS; ++x) {
+    for (auto y = 0; y < CANONICAL_COLS; ++y) {
+      tiles[index(x, y)] = inverse(tiles[index(x, y)]);
+      positions.push_back(std::make_pair(x, y));
+    }
+  }
+  return getId(tiles, positions);
+}
+
 Canonical::Canonical(unsigned id, Move const* const leftMove, Move const* const rightMove) :
   id(id),
   leftMove(leftMove),
   rightMove(rightMove) {}
+
+Canonical* Canonical::negative() const {
+  auto negativeLeftMove = leftMove ? leftMove->negative() : nullptr;
+  auto negativeRightMove = rightMove ? rightMove->negative() : nullptr;
+  return new Canonical(negative(id), negativeRightMove, negativeLeftMove);
+}
 
 std::string Canonical::toString() const {
   std::ostringstream s;

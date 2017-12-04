@@ -48,32 +48,35 @@ void Engine::train() const {
       ++id;
       continue;
     }
-    auto board = new Board(id);
-    if (1u < board->getAllRegions().size() || !board->getLeftScope() && !board->getRightScope()) {
-      ++id;
+
+    Canonical* canonical = nullptr;
+
+    unsigned minusId = Canonical::negative(id);
+    if (Guru::instance().knows(minusId)) {
+      canonical = Guru::instance().ask(minusId)->negative();
+    }
+    else {
+      auto board = new Board(id);
+      if (1u < board->getAllRegions().size() || !board->getLeftScope() && !board->getRightScope()) {
+        ++id;
+        delete board;
+        continue;
+      }
+      Log::clear();
+      Log::info(board);
+      bool asked = false;
+      Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft(), &asked);
+      Move* rightMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceRight(), &asked);
+      if (!asked || Input::getAnswer("Confirm action")) {
+        canonical = new Canonical(id, leftMove, rightMove);
+      }
       delete board;
-      continue;
     }
-    Log::clear();
-    Log::info(board);
-    Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft());
-    Move* rightMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceRight());
-    bool automated = true;
-    if (board->getLeftScope() && !leftMove) {
-      automated = false;
-      leftMove = Input::getMove(board, Player::instanceLeft());
-    }
-    if (board->getRightScope() && !rightMove) {
-      automated = false;
-      rightMove = Input::getMove(board, Player::instanceRight());
-    }
-    if (automated || Input::getAnswer("Confirm action")) {
-      Canonical* canonical = new Canonical(id, leftMove, rightMove);
+    if (canonical) {
       Guru::instance().learn(canonical);
       Input::saveCanonical(id);
       ++id;
     }
-    delete board;
     // Save what we have learnt
     Guru::instance().persist();
   }

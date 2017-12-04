@@ -30,15 +30,19 @@ Move* Calculator::calculateMove(Board const* board, Player const& player) const 
   return chosen;
 }
 
-Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player) const {
+Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player, bool* asked) const {
   auto moves = board->getMoves(player);
   if (1 == moves.size()) {
     return moves[0];
   }
+  if (0 == moves.size()) {
+    return nullptr;
+  }
   for (auto move : moves) {
     delete move;
   }
-  return nullptr;
+  *asked = true;
+  return Input::getMove(board, player);
 }
 
 Calculator::Calculator() {
