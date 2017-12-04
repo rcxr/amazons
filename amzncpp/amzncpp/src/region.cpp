@@ -3,7 +3,7 @@
 #include "region.h"
 #include "canonical.h"
 
-Region::Region(int id) : id(id), minX(0), minY(0), blanks(0), left(0), right(0) {}
+Region::Region(int id) : id(id), minX(INT_MAX), minY(INT_MAX), blanks(0), left(0), right(0) {}
 
 unsigned Region::getCanonicalId() const {
   std::vector<std::pair<int, int>> canonicalPositions;
