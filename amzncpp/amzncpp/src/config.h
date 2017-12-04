@@ -19,5 +19,6 @@
 #define CANONICAL_INVALID_ID UINT_MAX
 #define CANONICAL_DIR "input/canonical/"
 
-#define GURU_TRAIN_FLAG false
+#define GURU_TRAIN_FLAG true
+#define GURU_TRAIN_MANUAL_FLAG false
 #define GURU_DB_FILE "resources/guru.db"

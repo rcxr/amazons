@@ -44,8 +44,11 @@ Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player, b
   for (auto move : moves) {
     delete move;
   }
-  *asked = true;
-  return Input::getMove(board, player);
+  if (GURU_TRAIN_MANUAL_FLAG) {
+    *asked = true;
+    return Input::getMove(board, player);
+  }
+  return nullptr;
 }
 
 Move* Calculator::calculateGuruMove(Board const* board, Player const& player) const {

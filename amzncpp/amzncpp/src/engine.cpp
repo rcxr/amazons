@@ -5,6 +5,7 @@
 #include "move.h"
 #include "calculator.h"
 #include "guru.h"
+#include "config.h"
 
 Engine const& Engine::instance() {
   static Engine instance;
@@ -48,6 +49,7 @@ void Engine::train() const {
   auto id = 0u;
   while (active) {
     if (!Canonical::isValid(id) || Guru::instance().knows(id)) {
+      // Not canonical or already known
       ++id;
       continue;
     }
@@ -56,32 +58,42 @@ void Engine::train() const {
 
     unsigned minusId = Canonical::negative(id);
     if (Guru::instance().knows(minusId)) {
+      // Negative exists, reusing result
       canonical = Guru::instance().ask(minusId)->negative();
     }
     else {
       Board board(id);
-      if (1u < board.getAllRegions().size() ||
-        !board.getLeftScope() && !board.getRightScope() ||
-        3 < board.getPlayableRegions()[0]->getBlanks()) {
+      if (1u < board.getAllRegions().size() || 3 < board.getPlayableRegions()[0]->getBlanks()) {
+        // Not canonical or too large, skip it
         ++id;
         continue;
       }
-      Log::clear();
-      Log::info(&board);
-      bool asked = false;
-      Move* leftMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceLeft(), &asked);
-      Move* rightMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceRight(), &asked);
-      if (!asked || Input::getAnswer("Confirm action")) {
-        canonical = new Canonical(id, leftMove, rightMove);
+      if (0 == board.getLeftScope() && 0 == board.getRightScope()) {
+        // These are zero games, track them
+        canonical = new Canonical(id, nullptr, nullptr);
+      }
+      else {
+        Log::clear();
+        Log::info(&board);
+        bool manual = false;
+        Move* leftMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceLeft(), &manual);
+        Move* rightMove = Calculator::instance().calculateBestOrAsk(&board, Player::instanceRight(), &manual);
+        if (!manual || Input::getAnswer("Confirm action")) {
+          if (GURU_TRAIN_MANUAL_FLAG || leftMove && rightMove) {
+            canonical = new Canonical(id, leftMove, rightMove);
+          }
+        }
       }
     }
     if (canonical) {
-      Guru::instance().learn(canonical);
+      // TODO: condition this
       Input::saveCanonical(id);
+      // Learn new canonical position
+      Guru::instance().learn(canonical);
+      // Save what we have learnt
+      Guru::instance().persist();
       ++id;
     }
-    // Save what we have learnt
-    Guru::instance().persist();
   }
 }
 
