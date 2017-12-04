@@ -4,7 +4,7 @@
 
 bool isEven(int x, int y) { return 0 == (x + y) % 2; }
 
-char tileToFirstChar(Tile tile, bool even) {
+unsigned char tileToFirstChar(Tile tile, bool even) {
   switch (tile) {
   case TILE_BLANK: return even ? CHAR_BLANK_EVEN : CHAR_BLANK_ODD;
   case TILE_LEFT: return CHAR_LEFT_1;
@@ -16,7 +16,7 @@ char tileToFirstChar(Tile tile, bool even) {
   }
 }
 
-char tileToSecondChar(Tile tile, bool even) {
+unsigned char tileToSecondChar(Tile tile, bool even) {
   switch (tile) {
   case TILE_BLANK: return even ? CHAR_BLANK_EVEN : CHAR_BLANK_ODD;
   case TILE_LEFT: return CHAR_LEFT_2;
@@ -48,7 +48,7 @@ void Log::info(std::string const& message) {
 void Log::info(Board const* board) {
   title("Stats");
   std::cout << "  Left scope = " << board->getLeftScope() << ",  Right scope = " << board->getRightScope() << std::endl;
-  info(board->getRegions());
+  info(board->getPlayableRegions());
   title("Board");
   std::cout << "  Left        >   " << tileToFirstChar(TILE_LEFT, true) << tileToSecondChar(TILE_LEFT, true) << "  ";
   std::cout << "  Right       >   " << tileToFirstChar(TILE_RIGHT, true) << tileToSecondChar(TILE_RIGHT, true) << std::endl;

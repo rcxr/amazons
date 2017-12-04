@@ -6,11 +6,11 @@
 Region::Region(int id) : id(id), minX(0), minY(0), blanks(0), left(0), right(0) {}
 
 unsigned Region::getCanonicalId() const {
-  std::vector<std::pair<int, int>> positions;
-  for (auto p : this->positions) {
-    positions.push_back(std::make_pair(p.first - minX, p.second - minY));
+  std::vector<std::pair<int, int>> canonicalPositions;
+  for (auto p : positions) {
+    canonicalPositions.push_back(std::make_pair(p.first - minX, p.second - minY));
   }
-  return Canonical::getId(tiles, positions);
+  return Canonical::getId(tiles, canonicalPositions);
 }
 
 int Region::getId() const { return id; }

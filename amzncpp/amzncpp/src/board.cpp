@@ -8,7 +8,15 @@ Board::Board(std::vector<Tile> tiles, int rows, int cols) :
   cols(cols),
   leftScope(processScope(this, Player::instanceLeft())),
   rightScope(processScope(this, Player::instanceRight())),
-  regions(processRegions(this, tiles)) {}
+  regions(processRegions(this, tiles)) {
+  for (auto region : regions) {
+    if (!region->hasAmazons()) {
+      for (auto& tile : region->getTilePositions()) {
+        tiles[index(tile.first, tile.second)] = TILE_OUT_OF_REACH;
+      }
+    }
+  }
+}
 
 Board::Board(unsigned id) : Board(Canonical::getTiles(id), CANONICAL_ROWS, CANONICAL_COLS) {}
 
@@ -18,8 +26,18 @@ Board::~Board() {
   }
 }
 
-std::vector<Region*> const& Board::getRegions() const {
+std::vector<Region*> const& Board::getAllRegions() const {
   return regions;
+}
+
+std::vector<Region*> Board::getPlayableRegions() const {
+  std::vector<Region*> playableRegions;
+  for (auto region : regions) {
+    if (region->hasAmazons() && region->hasBlanks()) {
+      playableRegions.push_back(region);
+    }
+  }
+  return playableRegions;
 }
 
 int Board::getRows() const {
@@ -109,11 +127,11 @@ void Board::appendMoves(std::vector<Move*>& moves, Player const& player, int fro
 }
 
 Board* Board::apply(Move const* move) const {
-  auto tiles = this->tiles;
-  tiles[index(move->getFrom())] = TILE_BLANK;
-  tiles[index(move->getTo())] = move->getPlayer().getTile();
-  tiles[index(move->getTarget())] = TILE_VOID;
-  return new Board(tiles, rows, cols);
+  auto newTiles = this->tiles;
+  newTiles[index(move->getFrom())] = TILE_BLANK;
+  newTiles[index(move->getTo())] = move->getPlayer().getTile();
+  newTiles[index(move->getTarget())] = TILE_VOID;
+  return new Board(newTiles, rows, cols);
 }
 
 bool Board::isLegalMove(Move const* move) const {
@@ -139,20 +157,7 @@ std::vector<Region*> Board::processRegions(Board const* board, std::vector<Tile>
     }
   }
   delete[] visited;
-
-  std::vector<Region*> filteredRegions;
-  for (auto region : regions) {
-    if (!region->hasAmazons()) {
-      for (auto& tile : region->getTilePositions()) {
-        tiles[board->index(tile.first, tile.second)] = TILE_OUT_OF_REACH;
-      }
-    }
-    else if (region->hasBlanks()) {
-      filteredRegions.push_back(region);
-    }
-  }
-
-  return filteredRegions;
+  return regions;
 }
 
 void Board::spreadRegion(Board const* board, bool* visited, Region* region, int x, int y) {

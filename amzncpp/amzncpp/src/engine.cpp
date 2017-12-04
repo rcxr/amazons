@@ -49,7 +49,7 @@ void Engine::train() const {
       continue;
     }
     auto board = new Board(id);
-    if (1u < board->getRegions().size()) {
+    if (1u < board->getAllRegions().size()) {
       ++id;
       delete board;
       continue;

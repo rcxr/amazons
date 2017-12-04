@@ -10,7 +10,8 @@ public:
   explicit Board(unsigned id);
   ~Board();
 
-  std::vector<Region*> const& getRegions() const;
+  std::vector<Region*> const& getAllRegions() const;
+  std::vector<Region*> getPlayableRegions() const;
 
   int getRows() const;
   int getCols() const;
