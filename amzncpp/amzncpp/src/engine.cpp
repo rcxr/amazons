@@ -57,7 +57,9 @@ void Engine::train() const {
     }
     else {
       auto board = new Board(id);
-      if (1u < board->getAllRegions().size() || !board->getLeftScope() && !board->getRightScope()) {
+      if (1u < board->getAllRegions().size() ||
+        !board->getLeftScope() && !board->getRightScope() ||
+        3 < board->getPlayableRegions()[0]->getBlanks()) {
         ++id;
         delete board;
         continue;

@@ -23,6 +23,10 @@ bool Region::hasBlanks() const {
   return 0 < blanks;
 }
 
+int Region::getBlanks() const {
+  return blanks;
+}
+
 void Region::append(Tile tile, int x, int y) {
   switch (tile) {
   case TILE_BLANK:

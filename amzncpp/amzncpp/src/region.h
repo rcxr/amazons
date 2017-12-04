@@ -12,6 +12,8 @@ public:
   bool hasAmazons() const;
   bool hasBlanks() const;
 
+  int getBlanks() const;
+
   void append(Tile tile, int x, int y);
   std::vector<std::pair<int, int>> const& getTilePositions() const;
 
