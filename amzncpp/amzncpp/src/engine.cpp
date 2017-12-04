@@ -49,7 +49,7 @@ void Engine::train() const {
       continue;
     }
     auto board = new Board(id);
-    if (1u < board->getAllRegions().size()) {
+    if (1u < board->getAllRegions().size() || !board->getLeftScope() && !board->getRightScope()) {
       ++id;
       delete board;
       continue;
@@ -58,7 +58,16 @@ void Engine::train() const {
     Log::info(board);
     Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft());
     Move* rightMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceRight());
-    if (!leftMove && !rightMove || Input::getAnswer("Confirm action")) {
+    bool automated = true;
+    if (board->getLeftScope() && !leftMove) {
+      automated = false;
+      leftMove = Input::getMove(board, Player::instanceLeft());
+    }
+    if (board->getRightScope() && !rightMove) {
+      automated = false;
+      rightMove = Input::getMove(board, Player::instanceRight());
+    }
+    if (automated || Input::getAnswer("Confirm action")) {
       Canonical* canonical = new Canonical(id, leftMove, rightMove);
       Guru::instance().learn(canonical);
       Input::saveCanonical(id);

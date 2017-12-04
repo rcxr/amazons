@@ -38,7 +38,7 @@ Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player) c
   for (auto move : moves) {
     delete move;
   }
-  return moves.size() ? Input::getMove(board, player) : nullptr;
+  return nullptr;
 }
 
 Calculator::Calculator() {
