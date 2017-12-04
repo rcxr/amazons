@@ -134,8 +134,8 @@ CalculatorHeuristic Input::getMinMax() {
   }
 }
 
-std::unordered_map<unsigned, Canonical const*> Input::getGuruDB(std::string const& filename) {
-  std::unordered_map<unsigned, Canonical const*> db;
+std::map<unsigned, Canonical const*> Input::getGuruDB(std::string const& filename) {
+  std::map<unsigned, Canonical const*> db;
   std::ifstream stream(filename);
   if (!stream.is_open()) {
     Log::error("Guru file could not be opened. Running without guru :(");
@@ -162,7 +162,7 @@ std::unordered_map<unsigned, Canonical const*> Input::getGuruDB(std::string cons
   return db;
 }
 
-void Input::saveGuruDB(std::string const& filename, std::unordered_map<unsigned, Canonical const*> db) {
+void Input::saveGuruDB(std::string const& filename, std::map<unsigned, Canonical const*> db) {
   std::ofstream stream(filename);
   if (!stream.is_open()) {
     Log::error("Guru file could not be opened. Database will not be saved :(");

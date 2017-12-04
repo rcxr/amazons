@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_map>
+#include <map>
 #include "canonical.h"
 
 class Guru {
@@ -17,5 +17,5 @@ public:
 private:
   Guru();
   ~Guru();
-  std::unordered_map<unsigned, Canonical const*> db;
+  std::map<unsigned, Canonical const*> db;
 };

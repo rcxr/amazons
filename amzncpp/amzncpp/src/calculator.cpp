@@ -30,6 +30,17 @@ Move* Calculator::calculateMove(Board const* board, Player const& player) const 
   return chosen;
 }
 
+Move* Calculator::calculateBestOrAsk(Board const* board, Player const& player) const {
+  auto moves = board->getMoves(player);
+  if (1 == moves.size()) {
+    return moves[0];
+  }
+  for (auto move : moves) {
+    delete move;
+  }
+  return moves.size() ? Input::getMove(board, player) : nullptr;
+}
+
 Calculator::Calculator() {
   Log::info("MinMax/MaxMin calculator up and running");
 }

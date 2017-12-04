@@ -1,4 +1,3 @@
-#include <unordered_map>
 #include "board.h"
 #include "canonical.h"
 #include "config.h"

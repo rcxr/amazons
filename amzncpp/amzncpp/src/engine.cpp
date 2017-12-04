@@ -51,9 +51,8 @@ void Engine::train() const {
     auto board = new Board(id);
     Log::clear();
     Log::info(board);
-
-    Move* leftMove = board->getLeftScope() ? Input::getMove(board, Player::instanceLeft()) : nullptr;
-    Move* rightMove = board->getRightScope() ? Input::getMove(board, Player::instanceRight()) : nullptr;
+    Move* leftMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceLeft());
+    Move* rightMove = Calculator::instance().calculateBestOrAsk(board, Player::instanceRight());
     if (!leftMove && !rightMove || Input::getAnswer("Confirm action")) {
       Canonical* canonical = new Canonical(id, leftMove, rightMove);
       Guru::instance().learn(canonical);

@@ -12,6 +12,7 @@ public:
   static Calculator& instance();
 
   Move* calculateMove(Board const* board, Player const& player) const;
+  Move* calculateBestOrAsk(Board const* board, Player const& player) const;
 
   Calculator(Calculator const&) = delete;
   void operator=(Calculator const&) = delete;
