@@ -68,7 +68,11 @@ Move* Calculator::calculateGuruMove(Board const* board, Player const& player) co
   }
   for (auto region : board->getPlayableRegions()) {
     if (canonicalId == region->getCanonicalId()) {
-      return Guru::instance().ask(canonicalId)->getMove(player)->translate(region->getCanonicalDelta());
+      auto temp = Guru::instance().ask(canonicalId)->getMove(player);
+      if (!temp) {
+        Log::info("Sorry, that was an optimal move for the other player, let's fallback to normal input!");
+      }
+      return temp ? temp->translate(region->getCanonicalDelta()) : nullptr;
     }
   }
   throw;

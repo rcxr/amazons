@@ -63,7 +63,7 @@ void Engine::train() const {
     }
     else {
       Board board(id);
-      if (1u < board.getAllRegions().size() || 3 < board.getPlayableRegions()[0]->getBlanks()) {
+      if (1u < board.getAllRegions().size() || 0 == board.getPlayableRegions().size() || 3 < board.getPlayableRegions()[0]->getBlanks()) {
         // Not canonical or too large, skip it
         ++id;
         continue;
@@ -81,6 +81,9 @@ void Engine::train() const {
         if (!manual || Input::getAnswer("Confirm action")) {
           if (GURU_TRAIN_MANUAL_FLAG || leftMove && rightMove) {
             canonical = new Canonical(id, leftMove, rightMove);
+          }
+          else {
+            ++id;
           }
         }
       }

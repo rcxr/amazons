@@ -2,7 +2,7 @@
 #include "canonical.h"
 #include "config.h"
 
-Board::Board(std::vector<Tile> tiles, int rows, int cols) :
+Board::Board(std::vector<Tile> const& tiles, int rows, int cols) :
   tiles(tiles),
   rows(rows),
   cols(cols),
@@ -12,7 +12,7 @@ Board::Board(std::vector<Tile> tiles, int rows, int cols) :
   for (auto region : regions) {
     if (!region->hasAmazons()) {
       for (auto& tile : region->getTilePositions()) {
-        tiles[index(tile.first, tile.second)] = TILE_OUT_OF_REACH;
+        this->tiles[index(tile.first, tile.second)] = TILE_OUT_OF_REACH;
       }
     }
   }
@@ -142,7 +142,7 @@ bool Board::isLegalMove(Move const* move) const {
     && isClear(move->getToX(), move->getToY(), move->getTargetX(), move->getTargetY(), move->getFromX(), move->getFromY());
 }
 
-std::vector<Region*> Board::processRegions(Board const* board, std::vector<Tile> tiles) {
+std::vector<Region*> Board::processRegions(Board const* board, std::vector<Tile> const& tiles) {
   int id = 0;
   std::vector<Region*> regions;
   auto visited = new bool[board->getSize()];

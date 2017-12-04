@@ -6,7 +6,7 @@
 
 class Board {
 public:
-  explicit Board(std::vector<Tile> tiles, int rows, int cols);
+  explicit Board(std::vector<Tile> const& tiles, int rows, int cols);
   explicit Board(unsigned id);
   ~Board();
 
@@ -28,7 +28,7 @@ public:
   bool isLegalMove(Move const* move) const;
 
 private:
-  static std::vector<Region*> processRegions(Board const* board, std::vector<Tile> tiles);
+  static std::vector<Region*> processRegions(Board const* board, std::vector<Tile> const& tiles);
   static void spreadRegion(Board const* board, bool* visited, Region* region, int x, int y);
   static int processScope(Board const* board, Player const& player);
   static int getScope(Board const*, Tile tile, int x, int y);
@@ -42,7 +42,7 @@ private:
   bool isOutOfBoard(int x, int y) const;
   bool isPlayable(int x, int y) const;
 
-  std::vector<Tile> const tiles;
+  std::vector<Tile> tiles;
   int const rows;
   int const cols;
   int const leftScope;

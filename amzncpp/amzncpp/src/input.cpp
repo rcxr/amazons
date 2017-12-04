@@ -36,7 +36,7 @@ Board* parseBoardFile(std::string const& filename) {
   int cols;
   int tile;
   stream >> tile;
-  if (tile < 1) {
+  if (tile < 0) {
     stream >> rows >> cols;
     // We consumed metadata, we need to consume first actual value to be consistent
     stream >> tile;
