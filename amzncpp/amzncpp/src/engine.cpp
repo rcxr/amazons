@@ -52,24 +52,15 @@ void Engine::train() const {
     Log::clear();
     Log::info(board);
 
-    Move* leftMove = nullptr;
-    if (Input::getAnswer("Can left move?")) {
-      leftMove = Input::getMove(board, Player::instanceLeft());
-    }
-
-    Move* rightMove = nullptr;
-    if (Input::getAnswer("Can right move?")) {
-      rightMove = Input::getMove(board, Player::instanceRight());
-    }
-
-    if (Input::getAnswer("Confirm action")) {
+    Move* leftMove = board->getLeftScope() ? Input::getMove(board, Player::instanceLeft()) : nullptr;
+    Move* rightMove = board->getRightScope() ? Input::getMove(board, Player::instanceRight()) : nullptr;
+    if (!leftMove && !rightMove || Input::getAnswer("Confirm action")) {
       Canonical* canonical = new Canonical(id, leftMove, rightMove);
       Guru::instance().learn(canonical);
       Input::saveCanonical(id);
       ++id;
     }
     delete board;
-    active = Input::getAnswer("Train next position?");
     // Save what we have learnt
     Guru::instance().persist();
   }
