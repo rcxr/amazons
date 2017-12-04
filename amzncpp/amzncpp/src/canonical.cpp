@@ -4,7 +4,7 @@
 #include "config.h"
 
 int index(std::pair<int, int> p) {
-  return p.first + p.second * CANONICAL_WIDTH;
+  return CANONICAL_COLS * p.first + p.second;
 }
 
 Tile getTile(unsigned tile) {
@@ -30,7 +30,7 @@ unsigned getWeight(Tile tile, int index) {
 unsigned Canonical::getId(std::vector<Tile> const& tiles, std::vector<std::pair<int, int>> const& positions) {
   auto id = 0u;
   for (auto i = 0; i < tiles.size(); ++i) {
-    if (CANONICAL_WIDTH <= positions[i].first || CANONICAL_HEIGHT <= positions[i].second) {
+    if (CANONICAL_ROWS <= positions[i].first || CANONICAL_COLS <= positions[i].second) {
       return CANONICAL_INVALID_ID;
     }
     id += getWeight(tiles[i], index(positions[i]));
@@ -43,8 +43,8 @@ std::string Canonical::idToString(unsigned id) {
 }
 
 Tile* Canonical::getTiles(unsigned id) {
-  auto tiles = new Tile[CANONICAL_WIDTH * CANONICAL_HEIGHT];
-  for (auto i = 0; i < CANONICAL_WIDTH * CANONICAL_HEIGHT; ++i) {
+  auto tiles = new Tile[CANONICAL_ROWS * CANONICAL_COLS];
+  for (auto i = 0; i < CANONICAL_ROWS * CANONICAL_COLS; ++i) {
     tiles[i] = getTile(id & 3u);
     id = id >> 2;
   }

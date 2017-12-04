@@ -6,14 +6,14 @@
 
 class Board {
 public:
-  explicit Board(Tile* tiles, int width, int height);
+  explicit Board(Tile* tiles, int rows, int cols);
   explicit Board(unsigned id);
   ~Board();
 
   std::vector<Region*> const& getRegions() const;
 
-  int getWidth() const;
-  int getHeight() const;
+  int getRows() const;
+  int getCols() const;
   int getSize() const;
   Tile get(int x, int y) const;
   Tile get(std::pair<int, int> const& p) const;
@@ -42,8 +42,8 @@ private:
   bool isPlayable(int x, int y) const;
 
   Tile const* const tiles;
-  int const width;
-  int const height;
+  int const rows;
+  int const cols;
   int const leftScope;
   int const rightScope;
   std::vector<Region*> regions;

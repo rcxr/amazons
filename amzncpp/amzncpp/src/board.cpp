@@ -3,15 +3,15 @@
 #include "canonical.h"
 #include "config.h"
 
-Board::Board(Tile* tiles, int width, int height) :
+Board::Board(Tile* tiles, int rows, int cols) :
   tiles(tiles),
-  width(width),
-  height(height),
+  rows(rows),
+  cols(cols),
   leftScope(processScope(this, Player::instanceLeft())),
   rightScope(processScope(this, Player::instanceRight())),
   regions(processRegions(this, tiles)) {}
 
-Board::Board(unsigned id) : Board(Canonical::getTiles(id), CANONICAL_WIDTH, CANONICAL_HEIGHT) {}
+Board::Board(unsigned id) : Board(Canonical::getTiles(id), CANONICAL_ROWS, CANONICAL_COLS) {}
 
 Board::~Board() {
   for (auto region : regions) {
@@ -24,16 +24,16 @@ std::vector<Region*> const& Board::getRegions() const {
   return regions;
 }
 
-int Board::getWidth() const {
-  return width;
+int Board::getRows() const {
+  return rows;
 }
 
-int Board::getHeight() const {
-  return height;
+int Board::getCols() const {
+  return cols;
 }
 
 int Board::getSize() const {
-  return width * height;
+  return rows * cols;
 }
 
 Tile Board::get(int x, int y) const {
@@ -61,8 +61,8 @@ int Board::getScope(Player const& player) const {
 
 std::vector<Move*> Board::getMoves(Player const& player) const {
   std::vector<Move*> moves;
-  for (auto x = 0; x < width; ++x) {
-    for (auto y = 0; y < height; ++y) {
+  for (auto x = 0; x < rows; ++x) {
+    for (auto y = 0; y < cols; ++y) {
       appendMoves(moves, player, x, y);
     }
   }
@@ -111,12 +111,12 @@ void Board::appendMoves(std::vector<Move*>& moves, Player const& player, int fro
 }
 
 Board* Board::apply(Move const* move) const {
-  auto tiles = new Tile[width * height];
-  memcpy(tiles, this->tiles, width * height * sizeof Tile);
+  auto tiles = new Tile[rows * cols];
+  memcpy(tiles, this->tiles, rows * cols * sizeof Tile);
   tiles[index(move->getFrom())] = TILE_BLANK;
   tiles[index(move->getTo())] = move->getPlayer().getTile();
   tiles[index(move->getTarget())] = TILE_VOID;
-  return new Board(tiles, width, height);
+  return new Board(tiles, rows, cols);
 }
 
 bool Board::isLegalMove(Move const* move) const {
@@ -132,8 +132,8 @@ std::vector<Region*> Board::processRegions(Board const* board, Tile* tiles) {
   std::vector<Region*> regions;
   auto visited = new bool[board->getSize()];
   std::fill(visited, visited + board->getSize(), false);
-  for (auto x = 0; x < board->width; ++x) {
-    for (auto y = 0; y < board->height; ++y) {
+  for (auto x = 0; x < board->rows; ++x) {
+    for (auto y = 0; y < board->cols; ++y) {
       if (!visited[board->index(x, y)] && board->isPlayable(x, y)) {
         auto region = new Region(++id);
         spreadRegion(board, visited, region, x, y);
@@ -176,8 +176,8 @@ void Board::spreadRegion(Board const* board, bool* visited, Region* region, int 
 
 int Board::processScope(Board const* board, Player const& player) {
   auto scope = 0;
-  for (auto x = 0; x < board->width; ++x) {
-    for (auto y = 0; y < board->height; ++y) {
+  for (auto x = 0; x < board->rows; ++x) {
+    for (auto y = 0; y < board->cols; ++y) {
       scope += getScope(board, player.getTile(), x, y);
     }
   }
@@ -201,7 +201,7 @@ int Board::getScope(Board const* board, Tile tile, int x, int y) {
 }
 
 int Board::index(int x, int y) const {
-  return x + y * width;
+  return cols * x + y;
 }
 
 int Board::index(std::pair<int, int> const& p) const {
@@ -227,7 +227,7 @@ bool Board::isClear(int fromX, int fromY, int toX, int toY, int skipX, int skipY
 }
 
 bool Board::isOutOfBoard(int x, int y) const {
-  return x < 0 || width <= x || y < 0 || height <= y;
+  return x < 0 || rows <= x || y < 0 || cols <= y;
 }
 
 bool Board::isPlayable(int x, int y) const {

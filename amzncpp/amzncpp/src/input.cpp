@@ -32,33 +32,33 @@ Board* parseBoardFile(std::string const& filename) {
     return nullptr;
   }
 
-  int width;
-  int height;
+  int rows;
+  int cols;
   int tile;
   stream >> tile;
   if (tile < 1) {
-    stream >> width >> height;
+    stream >> rows >> cols;
     // We consumed metadata, we need to consume first actual value to be consistent
     stream >> tile;
   }
   else {
     // Value is an actual value, dimensions are as default
-    width = BOARD_DEFAULT_WIDTH;
-    height = BOARD_DEFAULT_HEIGHT;
+    rows = BOARD_DEFAULT_ROWS;
+    cols = BOARD_DEFAULT_COLS;
   }
 
   // Creating dynamic array and setting first position that we already got
-  Tile* tiles = new Tile[width * height];
+  Tile* tiles = new Tile[rows * cols];
   tiles[0] = intToTile(tile);
 
-  for (auto i = 1; i < width * height; ++i) {
+  for (auto i = 1; i < rows * cols; ++i) {
     stream >> tile;
     tiles[i] = intToTile(tile);
   }
   stream.close();
 
   Log::info("Board successfully loaded from file");
-  return new Board(tiles, width, height);
+  return new Board(tiles, rows, cols);
 }
 
 std::string getFile() {
@@ -182,10 +182,10 @@ void Input::saveCanonical(unsigned id) {
     Log::error("File could not be opened. Canonical position will not be saved :(");
     return;
   }
-  stream << -1 << ' ' << CANONICAL_WIDTH << ' ' << CANONICAL_HEIGHT << std::endl;
   auto board = new Board(id);
-  for (auto y = 0; y < board->getHeight(); ++y) {
-    for (auto x = 0; x < board->getWidth(); ++x) {
+  stream << -1 << ' ' << board->getRows() << ' ' << board->getCols() << std::endl;
+  for (auto x = 0; x < board->getRows(); ++x) {
+    for (auto y = 0; y < board->getCols(); ++y) {
       stream << tileToInt(board->get(x, y)) << ' ';
     }
     stream << std::endl;

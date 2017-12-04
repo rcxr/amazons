@@ -58,8 +58,8 @@ void Log::info(Board const* board) {
   std::cout << "  Unreachable > " << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << std::endl;
   std::cout << "                " << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true) << tileToFirstChar(TILE_BLANK, false) << tileToSecondChar(TILE_BLANK, false) << tileToFirstChar(TILE_BLANK, true) << tileToSecondChar(TILE_BLANK, true);
   std::cout << "                " << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << tileToFirstChar(TILE_OUT_OF_REACH, false) << tileToSecondChar(TILE_OUT_OF_REACH, false) << tileToFirstChar(TILE_OUT_OF_REACH, true) << tileToSecondChar(TILE_OUT_OF_REACH, true) << std::endl;
-  for (auto y = -1; y <= board->getHeight(); ++y) {
-    for (auto x = -1; x <= board->getWidth(); ++x) {
+  for (auto x = -1; x <= board->getRows(); ++x) {
+    for (auto y = -1; y <= board->getCols(); ++y) {
       std::cout << tileToFirstChar(board->get(x, y), isEven(x, y)) << tileToSecondChar(board->get(x, y), isEven(x, y));
     }
     std::cout << std::endl;
