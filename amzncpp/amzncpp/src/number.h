@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <sstream>
 
 class Number {
 public:
@@ -36,5 +37,13 @@ inline Number Number::operator+(Number const& other) const {
 }
 
 inline std::string Number::toString() const {
-  return valid ? std::to_string(n) + "/" + std::to_string(d) : "?";
+  if (!valid) {
+    return "?";
+  }
+  if (0 == n) {
+    return "0";
+  }
+  std::ostringstream s;
+  s << n << '/' << d;
+  return s.str();
 }

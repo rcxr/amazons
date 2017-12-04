@@ -1,6 +1,7 @@
+#include <string>
+#include <sstream>
 #include "region.h"
 #include "canonical.h"
-#include <string>
 
 Region::Region(int id) : id(id), minX(0), minY(0), blanks(0), left(0), right(0) {}
 
@@ -47,13 +48,14 @@ std::vector<std::pair<int, int>> const& Region::getTilePositions() const {
 }
 
 std::string Region::toString() const {
-  return "Region (id: "
-    + std::to_string(id)
-    + ", canonical: "
-    + Canonical::idToString(getCanonicalId())
-    + ", left/right/blanks: "
-    + std::to_string(left)
-    + "/" + std::to_string(right)
-    + "/" + std::to_string(blanks)
-    + ")";
+  std::ostringstream s;
+  s <<
+    "Region (id: " <<
+    id <<
+    ", canonical: " <<
+    Canonical::idToString(getCanonicalId()) <<
+    ", left/right/blanks: " <<
+    left << '/' << right << '/' << blanks <<
+    ')';
+  return s.str();
 }

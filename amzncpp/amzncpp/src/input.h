@@ -7,8 +7,11 @@
 namespace Input {
   Board* getBoard();
   Player const& getPlayer();
-  bool getRetry();
+  bool getAnswer(std::string const& message);
   Move* getMove(Board const* board, Player const& player);
   CalculatorHeuristic getMinMax();
-  std::unordered_map<unsigned, Canonical*> getGuruDB(std::string const& filename);
+  std::unordered_map<unsigned, Canonical const*> getGuruDB(std::string const& filename);
+
+  void saveGuruDB(std::string const& filename, std::unordered_map<unsigned, Canonical const*> db);
+  void saveCanonical(unsigned id);
 }

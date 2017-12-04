@@ -14,6 +14,9 @@ public:
   int getToY() const;
   int getTargetX() const;
   int getTargetY() const;
+
+  std::string toString() const;
+
 private:
   Player const& player;
   std::pair<int, int> const from;

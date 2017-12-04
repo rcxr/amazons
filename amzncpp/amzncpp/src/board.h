@@ -7,6 +7,7 @@
 class Board {
 public:
   explicit Board(Tile* tiles, int width, int height);
+  explicit Board(unsigned id);
   ~Board();
 
   std::vector<Region*> const& getRegions() const;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "input.h"
 #include "log.h"
 #include "config.h"
@@ -12,6 +13,15 @@ Tile intToTile(int tile) {
   case 2: return TILE_RIGHT;
   case 3: return TILE_VOID;
   default: throw;
+  }
+}
+
+int tileToInt(Tile tile) {
+  switch (tile) {
+  case TILE_BLANK: return 0;
+  case TILE_LEFT: return 1;
+  case TILE_RIGHT: return 2;
+  default: return 3;
   }
 }
 
@@ -80,9 +90,9 @@ Player const& Input::getPlayer() {
   }
 }
 
-bool Input::getRetry() {
+bool Input::getAnswer(std::string const& message) {
   while (true) {
-    Log::info("Would you like to play again?");
+    Log::info(message);
     std::string in;
     std::cin >> in;
     if (0 == in.compare("yes") || 0 == in.compare("y")) {
@@ -124,29 +134,62 @@ CalculatorHeuristic Input::getMinMax() {
   }
 }
 
-std::unordered_map<unsigned, Canonical*> Input::getGuruDB(std::string const& filename) {
-  std::unordered_map<unsigned, Canonical*> db;
+std::unordered_map<unsigned, Canonical const*> Input::getGuruDB(std::string const& filename) {
+  std::unordered_map<unsigned, Canonical const*> db;
   std::ifstream stream(filename);
   if (!stream.is_open()) {
     Log::error("Guru file could not be opened. Running without guru :(");
     return db;
   }
-  unsigned id, leftId, rightId, fromX, fromY, toX, toY, targetX, targetY;
+  unsigned id, fromX, fromY, toX, toY, targetX, targetY;
+  bool leftCanMove, rightCanMove;
   while (stream >> id) {
-    stream >> leftId >> rightId;
+    stream >> leftCanMove >> rightCanMove;
     Move* leftMove = nullptr;
-    if (CANONICAL_INVALID_ID != leftId) {
+    if (leftCanMove) {
       stream >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
       leftMove = new Move(Player::instanceLeft(), fromX, fromY, toX, toY, targetX, targetY);
     }
     Move* rightMove = nullptr;
-    if (CANONICAL_INVALID_ID != rightId) {
+    if (rightCanMove) {
       stream >> fromX >> fromY >> toX >> toY >> targetX >> targetY;
       rightMove = new Move(Player::instanceRight(), fromX, fromY, toX, toY, targetX, targetY);
     }
-    db[id] = new Canonical(id, leftId, rightId, leftMove, rightMove);
+    db[id] = new Canonical(id, leftMove, rightMove);
   }
   stream.close();
   Log::info("Guru database successfully loaded from file");
   return db;
+}
+
+void Input::saveGuruDB(std::string const& filename, std::unordered_map<unsigned, Canonical const*> db) {
+  std::ofstream stream(filename);
+  if (!stream.is_open()) {
+    Log::error("Guru file could not be opened. Database will not be saved :(");
+    return;
+  }
+  for (auto entry : db) {
+    stream << entry.second->toString() << std::endl;
+  }
+  Log::info("Guru database successfully saved to file");
+}
+
+void Input::saveCanonical(unsigned id) {
+  std::ostringstream s;
+  s << CANONICAL_DIR << "position" << id;
+  std::ofstream stream(s.str());
+  if (!stream.is_open()) {
+    Log::error("File could not be opened. Canonical position will not be saved :(");
+    return;
+  }
+  stream << -1 << ' ' << CANONICAL_WIDTH << ' ' << CANONICAL_HEIGHT << std::endl;
+  auto board = new Board(id);
+  for (auto y = 0; y < board->getHeight(); ++y) {
+    for (auto x = 0; x < board->getWidth(); ++x) {
+      stream << tileToInt(board->get(x, y)) << ' ';
+    }
+    stream << std::endl;
+  }
+  Log::info("Canonical position successfully saved to file");
+  delete board;
 }

@@ -1,6 +1,7 @@
-#include "board.h"
 #include <unordered_map>
-#include <algorithm>
+#include "board.h"
+#include "canonical.h"
+#include "config.h"
 
 Board::Board(Tile* tiles, int width, int height) :
   tiles(tiles),
@@ -9,6 +10,8 @@ Board::Board(Tile* tiles, int width, int height) :
   leftScope(processScope(this, Player::instanceLeft())),
   rightScope(processScope(this, Player::instanceRight())),
   regions(processRegions(this, tiles)) {}
+
+Board::Board(unsigned id) : Board(Canonical::getTiles(id), CANONICAL_WIDTH, CANONICAL_HEIGHT) {}
 
 Board::~Board() {
   for (auto region : regions) {

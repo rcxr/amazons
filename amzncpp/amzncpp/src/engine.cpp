@@ -1,3 +1,4 @@
+#include <sstream>
 #include "engine.h"
 #include "log.h"
 #include "input.h"
@@ -13,6 +14,7 @@ Engine const& Engine::instance() {
 void Engine::run() const {
   bool active = true;
   while (active) {
+    Log::clear();
     auto board = Input::getBoard();
     auto& user = Input::getPlayer();
 
@@ -34,12 +36,47 @@ void Engine::run() const {
     delete board;
     delete turn;
 
-    active = Input::getRetry();
+    active = Input::getAnswer("Would you like to play again?");
   }
 }
 
+void Engine::train() const {
+  bool active = true;
+  auto id = 0u;
+  while (active) {
+    if (Guru::instance().knows(id)) {
+      ++id;
+      continue;
+    }
+    auto board = new Board(id);
+    Log::clear();
+    Log::info(board);
+
+    Move* leftMove = nullptr;
+    if (Input::getAnswer("Can left move?")) {
+      leftMove = Input::getMove(board, Player::instanceLeft());
+    }
+
+    Move* rightMove = nullptr;
+    if (Input::getAnswer("Can right move?")) {
+      rightMove = Input::getMove(board, Player::instanceRight());
+    }
+
+    if (Input::getAnswer("Confirm action")) {
+      Canonical* canonical = new Canonical(id, leftMove, rightMove);
+      Guru::instance().learn(canonical);
+      Input::saveCanonical(id);
+      ++id;
+    }
+    delete board;
+    active = Input::getAnswer("Train next position?");
+  }
+  // Save what we have learnt
+  Guru::instance().persist();
+}
+
 Engine::Engine() {
-  Log::title("Welcome to amzn.cpp! :)");
+  Log::title("amzn.cpp");
   Log::info("Starting engine...");
   Calculator::instance();
   Guru::instance();
@@ -50,11 +87,14 @@ void Engine::report(Board const* board, TurnManager const* turn) const {
   Log::clear();
   Log::info(board);
   Log::title("Result");
-  Log::info("After "
-    + std::to_string(turn->getCount())
-    + " moves "
-    + turn->getCurrent().getLabel()
-    + " cannot move and "
-    + turn->getCurrent().next().getLabel()
-    + " has won! :D");
+  std::ostringstream s;
+  s <<
+    "After " <<
+    turn->getCount() <<
+    " moves " <<
+    turn->getCurrent().getLabel() <<
+    " cannot move and " <<
+    turn->getCurrent().next().getLabel() <<
+    " has won! :D";
+  Log::info(s.str());
 }

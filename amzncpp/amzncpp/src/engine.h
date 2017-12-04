@@ -7,6 +7,7 @@ public:
   static Engine const& instance();
 
   void run() const;
+  void train() const;
 
   Engine(Engine const&) = delete;
   void operator=(Engine const&) = delete;
