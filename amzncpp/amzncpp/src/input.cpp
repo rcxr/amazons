@@ -78,10 +78,10 @@ Board* Input::getBoard() {
 
 Player const& Input::getPlayer() {
   while (true) {
-    Log::info("Choose player (left or right)");
+    Log::info("Choose player (\"left\", \"l\" or press enter for left, \"right\" or \"r\" for right)");
     std::string player;
-    std::cin >> player;
-    if (0 == player.compare("left") || 0 == player.compare("l")) {
+    getline(std::cin, player);
+    if (0 == player.compare("left") || 0 == player.compare("l") || player.empty()) {
       return Player::instanceLeft();
     }
     if (0 == player.compare("right") || 0 == player.compare("r")) {
@@ -92,10 +92,10 @@ Player const& Input::getPlayer() {
 
 bool Input::getAnswer(std::string const& message) {
   while (true) {
-    Log::info(message);
+    Log::info(message + " (\"yes\", \"y\" or press enter for yes, \"no\", \"n\" for no)");
     std::string in;
-    std::cin >> in;
-    if (0 == in.compare("yes") || 0 == in.compare("y")) {
+    getline(std::cin, in);
+    if (0 == in.compare("yes") || 0 == in.compare("y") || in.empty()) {
       return true;
     }
     if (0 == in.compare("no") || 0 == in.compare("n")) {
@@ -122,10 +122,10 @@ Move* Input::getMove(Board const* board, Player const& player) {
 
 CalculatorHeuristic Input::getMinMax() {
   while (true) {
-    Log::info("Choose heuristic (minmax or maxmin)");
+    Log::info("Choose heuristic (\"minmax\", \"min\" or press enter for mixman, \"maxmin\" or \"max\" for maxmin)");
     std::string h;
-    std::cin >> h;
-    if (0 == h.compare("min") || 0 == h.compare("minmax")) {
+    getline(std::cin, h);
+    if (0 == h.compare("min") || 0 == h.compare("minmax") || h.empty()) {
       return CALCULATOR_HEURISTIC_MINMAX;
     }
     if (0 == h.compare("max") || 0 == h.compare("maxmin")) {
@@ -171,12 +171,13 @@ void Input::saveGuruDB(std::string const& filename, std::unordered_map<unsigned,
   for (auto entry : db) {
     stream << entry.second->toString() << std::endl;
   }
+  stream.close();
   Log::info("Guru database successfully saved to file");
 }
 
 void Input::saveCanonical(unsigned id) {
   std::ostringstream s;
-  s << CANONICAL_DIR << "position" << id;
+  s << CANONICAL_DIR << "position" << id << ".txt";
   std::ofstream stream(s.str());
   if (!stream.is_open()) {
     Log::error("File could not be opened. Canonical position will not be saved :(");
@@ -190,6 +191,7 @@ void Input::saveCanonical(unsigned id) {
     }
     stream << std::endl;
   }
+  stream.close();
   Log::info("Canonical position successfully saved to file");
   delete board;
 }

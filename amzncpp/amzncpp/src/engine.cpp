@@ -70,9 +70,9 @@ void Engine::train() const {
     }
     delete board;
     active = Input::getAnswer("Train next position?");
+    // Save what we have learnt
+    Guru::instance().persist();
   }
-  // Save what we have learnt
-  Guru::instance().persist();
 }
 
 Engine::Engine() {
